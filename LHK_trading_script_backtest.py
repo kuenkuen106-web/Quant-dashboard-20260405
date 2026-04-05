@@ -73,49 +73,157 @@ SIMULATE_DAYS_AGO = int(raw_days)
 print(f"⏳ [1-3/7] 正在構建股票池與抓取歷史數據...")
 
 def build_dynamic_watchlist():
-    ticker_sources = {}
+    print("⏳ [1/7] 正在構建全球動態股票池...")
+    ticker_sources = {} # 修正：這裡必須是字典 {}
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
     def add_to_map(tickers, source_label):
         for t in tickers:
             if not isinstance(t, str): continue
-            if t not in ticker_sources: ticker_sources[t] = []
-            if source_label not in ticker_sources[t]: ticker_sources[t].append(source_label)
-
-    # 1. S&P 500
+            if t not in ticker_sources:
+                ticker_sources[t] = []
+            if source_label not in ticker_sources[t]:
+                ticker_sources[t].append(source_label)
+    # ---------------------------------------------------------
+    # 1. 獲取標普 500 全名單 ((穩定版：DataHub CSV)) - 用作全面回測基礎
+    # ---------------------------------------------------------
     try:
-        sp500_url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
-        sp500_table = pd.read_html(sp500_url)[0]
-        sp500_tickers = sp500_table['Symbol'].str.replace('.', '-').tolist()
+        # 這是 DataHub 維護的 S&P 500 CSV
+        csv_url = "https://raw.githubusercontent.com/datasets/s-p-500-companies/master/data/constituents.csv"
+        df_sp = pd.read_csv(csv_url)
+        sp500_tickers = df_sp['Symbol'].str.replace('.', '-').tolist()
         add_to_map(sp500_tickers, "S&P500")
-    except: print("⚠️ S&P 500 載入失敗")
+        print(f"  ✅ 成功從 DataHub 載入 S&P 500 (共 {len(sp500_tickers)} 隻)")
+    except Exception as e:
+        print(f"  ⚠️ S&P 500 載入失敗，嘗試 Fallback 機制")
+        # 如果 fail，可以手動加入2026/04/05 list
+        sp500_full_list = [
+        "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "GOOG", "META", "BRK-B", "TSLA", "UNH",
+        "JPM", "XOM", "V", "MA", "AVGO", "PG", "HD", "JNJ", "LLY", "COST",
+        "CVX", "MRK", "ABBV", "PEP", "KO", "TMO", "PFE", "BAC", "ORCL", "MCD",
+        "CSCO", "CRM", "ABT", "ACN", "LIN", "NFLX", "AMD", "DIS", "WMT", "TXN",
+        "DHR", "PM", "NKE", "NEE", "VZ", "RTX", "UPS", "HON", "QCOM", "AMGN",
+        "LOW", "SPGI", "IBM", "INTU", "CAT", "UNP", "COP", "SBUX", "DE", "GS",
+        "PLD", "MS", "BLK", "ELV", "GILD", "ISRG", "TJX", "LMT", "SYK", "ADP",
+        "MDT", "VRTX", "MMC", "AMT", "GE", "CI", "CB", "NOW", "ADI", "LRCX",
+        "MDLZ", "T", "ETN", "REGN", "ZTS", "BSX", "MU", "PANW", "PGR", "FI",
+        "SNPS", "C", "KLAC", "VLO", "CDNS", "WM", "EOG", "SHW", "MAR", "MCK",
+        "CVS", "MO", "PH", "GD", "ORLY", "APH", "SLB", "ITW", "USB", "FDX",
+        "ECL", "ROP", "PXD", "TGT", "BDX", "NXPI", "CMG", "MNST", "MPC", "MCO",
+        "CTAS", "AIG", "NSC", "PSX", "ADSK", "AON", "EMR", "MET", "D", "KMB",
+        "SRE", "MSI", "MCHP", "AJG", "HCA", "AZO", "F", "WELL", "EW", "DRE",
+        "O", "PCAR", "GPN", "ADP", "FIS", "HUM", "PAYX", "TEL", "DOW", "BKR",
+        "ADM", "KDP", "STZ", "CNC", "JCI", "SYY", "CTSH", "CARR", "DXCM", "EIX",
+        "IDXX", "VRSK", "DLR", "IQV", "A", "GWW", "COR", "ED", "NEM", "CHTR",
+        "YUM", "OXY", "MSCI", "KHC", "WFC", "TFC", "PNC", "COF", "DFS", "SYF",
+        "KEY", "RF", "HBAN", "FITB", "CFG", "STT", "NTRS", "MTB", "BK", "AMP",
+        "IVZ", "BEN", "TROW", "GL", "L", "AIZ", "RE", "TRV", "CBRE", "HST",
+        "SPG", "AVB", "EQR", "VTR", "PEAK", "BXP", "MAA", "CPT", "UDR", "ESS",
+        "ARE", "VICI", "PSA", "EXR", "SBAC", "CCI", "AWK", "NI", "PNW", "ATO",
+        "LNT", "ES", "WEC", "CMS", "XEL", "ETR", "FE", "AEE", "AEP", "PEG",
+        "DTE", "PPL", "DUK", "SO", "CNP", "VST", "PARA", "WBD", "NWSA", "NWS",
+        "FOXA", "FOX", "LYV", "MTCH", "GOOG", "GOOGL", "NFLX", "DIS", "EA",
+        "TTWO", "OMC", "IPG", "CHTR", "VZ", "T", "TMUS", "LUMN", "FYBR", "AMX",
+        "TSLA", "AMZN", "HD", "LOW", "MCD", "SBUX", "NKE", "TGT", "TJX", "ORLY",
+        "AZO", "ROST", "MAR", "HLT", "YUM", "CMG", "DHI", "LEN", "PHM", "NVR",
+        "GRMN", "F", "GM", "BBY", "EBAY", "ETSY", "RVTY", "POOL", "HAS", "MAT",
+        "WMT", "COST", "PG", "KO", "PEP", "PM", "MO", "EL", "CL", "KMB",
+        "MDLZ", "K", "GIS", "CPB", "HRL", "SJM", "ADM", "STZ", "TAP", "MNST",
+        "SYY", "KR", "WBA", "TGT", "DLTR", "DG", "XOM", "CVX", "COP", "SLB",
+        "HAL", "BKR", "MPC", "PSX", "VLO", "EOG", "PXD", "OXY", "HES", "DVN",
+        "FANG", "MRO", "APA", "CTRA", "OKE", "TRGP", "KMI", "WMB", "JPM", "BAC",
+        "WFC", "C", "MS", "GS", "BLK", "AMP", "TROW", "BEN", "IVZ", "STT",
+        "NTRS", "BK", "SCHW", "RJF", "LPLA", "AXP", "V", "MA", "DFS", "COF",
+        "SYF", "PYPL", "GPN", "FIS", "FISV", "JKHY", "AON", "MMC", "AJG", "WTW",
+        "MET", "PRU", "AFL", "TRV", "CB", "PGR", "ALL", "HIG", "L", "CINF",
+        "RE", "AIZ", "GL", "SPGI", "MCO", "MSCI", "NDAQ", "CME", "ICE", "BLK",
+        "UNH", "ELV", "CI", "HUM", "CNC", "CVS", "JNJ", "LLY", "ABBV", "MRK",
+        "PFE", "GILD", "VRTX", "REGN", "AMGN", "BMY", "ZTS", "IDXX", "EW", "BSX",
+        "MDT", "ABT", "SYK", "BDX", "ISRG", "DXCM", "STE", "TMO", "DHR", "A",
+        "WAT", "MTD", "IQV", "CRL", "RMD", "BA", "LMT", "RTX", "GD", "NOC",
+        "TDG", "HWM", "TXT", "GE", "HON", "MMM", "EMR", "ITW", "ETN", "PH",
+        "AME", "ROK", "DOV", "XYL", "GWW", "FAST", "CTAS", "ADP", "PAYX", "RSG",
+        "WM", "UNP", "NSC", "CSX", "FDX", "UPS", "CPT", "INVH", "AMH", "SBAC",
+        "CCI", "AMT", "PLD", "PSA", "EXR", "VICI", "DLR", "EQIX", "NVDA", "AVGO",
+        "AMD", "INTC", "QCOM", "TXN", "ADI", "MU", "AMAT", "LRCX", "KLAC", "SNPS",
+        "CDNS", "ADSK", "ANSS", "ORCL", "CRM", "SAP", "NOW", "PANW", "FTNT", "IBM",
+        "ACN", "CTSH", "TEL", "APH", "MSI", "STX", "WDC", "HPQ", "DELL", "NTAP"
+        # 但將本 List 作為 "If fail then use this" 的 Fallback。
+        ]
+        # 執行合併
+        add_to_map(sp500_full_list, "S&P500")
 
-    # 2. Finviz 異動
-    finviz_configs = [
+    # ---------------------------------------------------------
+    # 2. 獲取 Finviz 異動股 (Unusual Volume & Top Gainers)
+    # ---------------------------------------------------------
+    # 呢度係捕捉「當日最熱門」標的關鍵
+    finviz_urls = [
         ("https://finviz.com/screener.ashx?v=111&s=ta_topgainers", "Finviz升幅"),
         ("https://finviz.com/screener.ashx?v=111&s=ta_unusualvolume", "Finviz異動")
     ]
-    for url, label in finviz_configs:
+    
+    for url, label in finviz_urls:
         try:
             response = requests.get(url, headers=headers)
             found_tickers = pd.read_html(response.text)[-2][1].tolist()
             found_tickers = [t for t in found_tickers if isinstance(t, str) and t.isupper() and len(t) <= 5]
             add_to_map(found_tickers, label)
-        except: pass
+            print(f"  🔥 捕捉到 {label} 標的: {len(found_tickers)} 隻")
+        except:
+            print(f"  ⚠️ {label} 抓取略過")
 
-    # 3. 日股名單
+    # ---------------------------------------------------------
+    # 3. 獲取日股動態名單 (Nikkei 225 + 當日熱門)
+    # ---------------------------------------------------------
     try:
+        # A. 核心名單：日經 225
         n225_url = 'https://en.wikipedia.org/wiki/Nikkei_225'
-        n225_table = pd.read_html(n225_url, match='Company')[0]
+        response = requests.get(n225_url, headers=headers, timeout=10)
+        n225_table = pd.read_html(response.text, match='Company')[0]
         n225_tickers = (n225_table.iloc[:, 1].astype(str) + '.T').tolist()
         add_to_map(n225_tickers, "NK225")
         
+        # B. 🔥 捕捉日股當日熱門搜尋 (Trending in Japan)
+        # 透過 Yahoo Finance API 獲取日本市場熱門標的
         jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
         res_jp = requests.get(jp_trending_url, headers=headers)
         if res_jp.status_code == 200:
             jp_trending = [q['symbol'] for q in res_jp.json()['finance']['result'][0]['quotes']]
             add_to_map(jp_trending, "JP熱門")
-    except: print("⚠️ 日股載入失敗")
+            print(f"  🔥 捕捉到日股當日焦點: {len(jp_trending)} 隻")
+        print(f"  ✅ 成功構建日股動態池")
+    except Exception as e:
+        print(f"  ⚠️ 日股名單載入失敗: {e}")
+        # 如果 fail, 手動加入2026/04/05 list
+        nk225_tickers = [
+        "1332.T", "1605.T", "1721.T", "1801.T", "1802.T", "1803.T", "1812.T", "1925.T", "1928.T", "1963.T",
+        "2002.T", "2267.T", "2282.T", "2413.T", "2432.T", "2501.T", "2502.T", "2503.T", "2531.T", "2768.T",
+        "2801.T", "2802.T", "2871.T", "2914.T", "3086.T", "3099.T", "3101.T", "3103.T", "3289.T", "3382.T",
+        "3401.T", "3402.T", "3405.T", "3407.T", "3436.T", "3659.T", "3861.T", "3863.T", "4004.T", "4005.T",
+        "4021.T", "4042.T", "4043.T", "4061.T", "4063.T", "4151.T", "4183.T", "4188.T", "4208.T", "4324.T",
+        "4452.T", "4502.T", "4503.T", "4506.T", "4507.T", "4519.T", "4523.T", "4543.T", "4568.T", "4578.T",
+        "4661.T", "4689.T", "4704.T", "4751.T", "4755.T", "4901.T", "4911.T", "5019.T", "5020.T", "5101.T",
+        "5108.T", "5201.T", "5202.T", "5214.T", "5232.T", "5233.T", "5301.T", "5332.T", "5333.T", "5401.T",
+        "5406.T", "5411.T", "5541.T", "5631.T", "5703.T", "5706.T", "5707.T", "5711.T", "5713.T", "5801.T",
+        "5802.T", "5803.T", "5901.T", "6098.T", "6103.T", "6113.T", "6178.T", "6301.T", "6302.T", "6305.T",
+        "6326.T", "6361.T", "6367.T", "6471.T", "6472.T", "6473.T", "6501.T", "6503.T", "6504.T", "6506.T",
+        "6645.T", "6674.T", "6701.T", "6702.T", "6703.T", "6723.T", "6724.T", "6752.T", "6753.T", "6758.T",
+        "6762.T", "6770.T", "6841.T", "6857.T", "6902.T", "6920.T", "6952.T", "6954.T", "6971.T", "6976.T",
+        "6981.T", "6988.T", "7011.T", "7012.T", "7013.T", "7186.T", "7201.T", "7202.T", "7203.T", "7205.T",
+        "7211.T", "7261.T", "7267.T", "7269.T", "7270.T", "7272.T", "7731.T", "7733.T", "7735.T", "7741.T",
+        "7751.T", "7752.T", "7832.T", "7911.T", "7912.T", "7951.T", "8001.T", "8002.T", "8015.T", "8031.T",
+        "8035.T", "8053.T", "8058.T", "8233.T", "8252.T", "8253.T", "8267.T", "8304.T", "8306.T", "8308.T",
+        "8309.T", "8316.T", "8331.T", "8354.T", "8411.T", "8601.T", "8604.T", "8628.T", "8630.T", "8697.T",
+        "8725.T", "8750.T", "8766.T", "8795.T", "8801.T", "8802.T", "8804.T", "8830.T", "9001.T", "9005.T",
+        "9007.T", "9008.T", "9009.T", "9020.T", "9021.T", "9022.T", "9041.T", "9042.T", "9062.T", "9064.T",
+        "9101.T", "9104.T", "9107.T", "9201.T", "9202.T", "9301.T", "9412.T", "9432.T", "9433.T", "9434.T",
+        "9501.T", "9502.T", "9503.T", "9531.T", "9532.T", "9602.T", "9613.T", "9681.T", "9735.T", "9766.T",
+        "9843.T", "9983.T", "9984.T"
+        ]
+        # 執行合併
+        add_to_map(nk225_tickers, "NK225")
+
+    
 
     add_to_map(['SPY', '^VIX', '^N225'], "基準指數")
     return ticker_sources
