@@ -63,7 +63,7 @@ trade_history = load_history()
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
 LOOKBACK_YEARS = 3
-PQR_SWING_MIN = 5 
+PQR_SWING_MIN = 75 
 raw_days = os.environ.get("UAT_DAYS_AGO", "10")
 SIMULATE_DAYS_AGO = int(raw_days)
 
@@ -292,54 +292,86 @@ for trade in trade_history:
                 closed_this_run.append(trade)
 
 # =============================================================================
-# MODULE 4 & 5 — 雙策略判定引擎
+# MODULE 4 & 5 — 雙策略判定引擎 (優化架構版)
 # =============================================================================
 print(f"⏳ [4-6/7] 正在按 {today_str} 視角進行策略演算...")
 
 swing_results = []
 short_term_results = []
-
 funnel = {"total": 0, "data_nan": 0, "liq_fail": 0, "market_fail": 0, "rs_fail": 0, "vcp_fail": 0, "ok": 0}
 
 for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
     funnel["total"] += 1
     try:
-        c = closes[ticker]; h = highs[ticker]; l = lows[ticker]; v = vols[ticker]; op = opens[ticker]
-        if len(c.dropna()) < 200: continue
+        # --- 第一層：數據完整性 ---
+        c_raw = closes[ticker].dropna()
+        if len(c_raw) < 252 + 200: # 確保足夠計 RS 同 SMA200
+            funnel["data_nan"] += 1
+            continue
         
+        # 定義基礎數據
+        c = closes[ticker]; h = highs[ticker]; l = lows[ticker]; v = vols[ticker]; op = opens[ticker]
+        cp = float(c.iloc[-1])
+        
+        # --- 第二層：流動性過濾 ---
         avg_dollar_vol = (c.tail(20) * v.tail(20)).mean()
         min_liq = 300_000_000 if ticker.endswith('.T') else 5_000_000
-              
+        if avg_dollar_vol < min_liq:
+            funnel["liq_fail"] += 1
+            continue
+            
+        # --- 第三層：大盤趨勢 (is_bull) ---
         is_jp = ticker.endswith('.T')
-        sma20 = c.rolling(20).mean(); sma50 = c.rolling(50).mean(); sma200 = c.rolling(200).mean()
-        atr = (h-l).rolling(14).mean(); cp = float(c.iloc[-1]); catr = float(atr.iloc[-1])
-        rs = rs_rank[ticker].iloc[-1]
-              
-        std20 = c.rolling(20).std(); bb_lower = sma20 - (2 * std20); bb_width = (4 * std20) / sma20
-        delta = c.diff(); gain = (delta.where(delta > 0, 0)).rolling(14).mean(); loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
-        rsi = 100 - (100 / (1 + gain/loss))
-        
-        bench_200 = n225_200.iloc[-1] if is_jp else spy_200.iloc[-1]
         bench_c = n225_c.iloc[-1] if is_jp else spy_c.iloc[-1]
+        bench_200 = n225_200.iloc[-1] if is_jp else spy_200.iloc[-1]
         is_bull = bench_c > bench_200
         
-        sources = TICKER_MAP.get(ticker, ["動態掃描"])
+        if not is_bull:
+            funnel["market_fail"] += 1
+            # 注意：如果大盤唔好，Swing 可能唔行，但 Short Term (超賣) 可能想行
+            # 呢度假設你兩個策略都要大盤好先做，所以 continue
+            continue
 
-        # 策略 A: Swing
+        # --- 第四層：相對強度 (RS) ---
+        rs = rs_rank[ticker].iloc[-1]
+        if pd.isna(rs) or rs < PQR_SWING_MIN:
+            funnel["rs_fail"] += 1
+            continue
+
+        # --- 第五層：計算技術指標 (只針對過咗上面幾關嘅股票) ---
+        sma20 = c.rolling(20).mean()
+        std20 = c.rolling(20).std()
+        bb_lower = sma20 - (2 * std20)
+        bb_width = (4 * std20) / sma20
+        atr = (h-l).rolling(14).mean(); catr = float(atr.iloc[-1])
+        
+        # RSI
+        delta = c.diff()
+        gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+        rsi = 100 - (100 / (1 + gain/loss))
+        
+        sources = TICKER_MAP.get(ticker, ["動態掃描"])
+        triggered = False
+
+        # ---------------------------------------------------------------------
+        # 策略 A: Swing (VCP / BB Sqz)
+        # ---------------------------------------------------------------------
         base_dd = (c.rolling(60).max() - c.rolling(60).min()) / c.rolling(60).max()
         rec_volat = (c.rolling(10).max() - c.rolling(10).min()) / c.rolling(10).max()
         is_vcp = (base_dd <= 0.35) and (rec_volat <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
         is_bb_sqz = (bb_width.iloc[-1] <= bb_width.rolling(120).min().iloc[-1] * 1.1)
 
-        if is_bull and rs >= PQR_SWING_MIN and (is_vcp or is_bb_sqz):
+        if is_vcp or is_bb_sqz:
             tag_name = "🏆 VCP 突破" if is_vcp else "💥 BB 擠壓"
             sl_p = round(cp - 2.5 * catr, 2); tp_p = round(cp + 4.5 * catr, 2)
             swing_results.append({'tk': ticker, 'pqr': round(rs, 0), 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'tag': tag_name, 'type': 'SWING', 'sources': sources})
             send_discord_alert(ticker, tag_name, round(cp, 2), sl_p, tp_p, True, sources)
-            if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
-                trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SWING'})
+            triggered = True
 
-        # 策略 B: Short
+        # ---------------------------------------------------------------------
+        # 策略 B: Short Term (Gap / Oversold)
+        # ---------------------------------------------------------------------
         gap_pct = (op.iloc[-1] - c.iloc[-2]) / c.iloc[-2]
         is_gap_up = (gap_pct >= 0.03) and (v.iloc[-1] > v.rolling(20).mean().iloc[-1] * 2)
         is_oversold = (rsi.iloc[-1] < 28) and (cp < bb_lower.iloc[-1])
@@ -349,36 +381,19 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
             sl_price = round(cp * 0.95, 2); tp_price = round(cp * 1.05, 2)
             short_term_results.append({'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'tag': strategy_tag, 'type': 'SHORT', 'sources': sources})
             send_discord_alert(ticker, strategy_tag, round(cp, 2), sl_price, tp_price, True, sources)
+            triggered = True
+
+        # 寫入歷史庫 (如果有任何一個策略觸發)
+        if triggered:
+            funnel["ok"] += 1
             if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
-                trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SHORT'})
-        
-        # 1. 檢查數據完整性 (呢度係最常死人嘅地方)
-        c = closes[ticker].dropna()
-        if len(c) < 252 + 200: # 確保夠計 RS 同 SMA200
-            funnel["data_nan"] += 1
-            continue
-        # 2. 流動性
-        avg_vol = (closes[ticker].tail(20) * vols[ticker].tail(20)).mean()
-        if avg_vol < (300_000_000 if ticker.endswith('.T') else 5_000_000):
-            funnel["liq_fail"] += 1
-            continue
-        # 3. 大盤
-        if not is_bull:
-            funnel["market_fail"] += 1
-            continue    
-        # 4. RS 排名 (檢查係唔係 NaN)
-        if pd.isna(rs) or rs < PQR_SWING_MIN:
-            funnel["rs_fail"] += 1
-            continue
-        # 5. vcp
-        if not is_vcp and not is_bb_sqz:
+                 # 這裡可以根據具體策略紀錄，範例先記 Swing 的 price
+                 trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'status': 'OPEN'})
+        else:
             funnel["vcp_fail"] += 1
-            continue
-        funnel["ok"] += 1
-            
+
     except Exception as e:
         funnel["data_nan"] += 1
-
 
 # 循環完咗之後 Print 報告
 print(f"\n📊 --- UAT 策略漏斗報告 ({today_str}) ---")
