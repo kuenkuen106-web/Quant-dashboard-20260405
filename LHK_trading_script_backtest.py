@@ -63,7 +63,7 @@ trade_history = load_history()
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
 LOOKBACK_YEARS = 3
-PQR_SWING_MIN = 75 
+PQR_SWING_MIN = 1 
 raw_days = os.environ.get("UAT_DAYS_AGO", "10")
 SIMULATE_DAYS_AGO = int(raw_days)
 
@@ -180,15 +180,32 @@ def build_dynamic_watchlist():
     # 3. 獲取日股動態名單 (Nikkei 225 + 當日熱門)
     # ---------------------------------------------------------
     try:
-        # A. 核心名單：日經 225
         n225_url = 'https://en.wikipedia.org/wiki/Nikkei_225'
-        response = requests.get(n225_url, headers=headers, timeout=10)
-        n225_table = pd.read_html(response.text, match='Company')[0]
-        n225_tickers = (n225_table.iloc[:, 1].astype(str) + '.T').tolist()
-        add_to_map(n225_tickers, "NK225")
+        res = requests.get(n225_url, headers=headers, timeout=10)
         
-        # B. 🔥 捕捉日股當日熱門搜尋 (Trending in Japan)
-        # 透過 Yahoo Finance API 獲取日本市場熱門標的
+        # 唔好用 match='Company'，直接攞晒所有 Table 慢慢揀
+        tables = pd.read_html(res.text)
+        
+        found_nk = []
+        import re
+        
+        # 遍歷網頁入面所有表格，搵出符合日股 4 位數格式嘅代號
+        for df in tables:
+            # 將成個表格轉成文字串流
+            all_values = df.astype(str).values.flatten()
+            # 用 Regex 搵出純 4 位數字 (例如 9984)
+            codes = [f"{m}.T" for m in all_values if re.match(r'^\d{4}$', m)]
+            if len(codes) >= 100: # NK225 應該至少有 225 隻，攞到 100 隻以上就代表搵啱表
+                found_nk = list(set(codes)) # 去重
+                break
+        
+        if found_nk:
+            add_to_map(found_nk, "NK225")
+            print(f"  ✅ 成功從 Wikipedia 載入 NK225 (共 {len(found_nk)} 隻)")
+        else:
+            raise ValueError("找不到符合格式的日股表格")
+
+        # B. 捕捉 JP Trending (保持不變)
         jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
         res_jp = requests.get(jp_trending_url, headers=headers)
         if res_jp.status_code == 200:
