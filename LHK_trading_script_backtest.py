@@ -63,7 +63,7 @@ trade_history = load_history()
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
 LOOKBACK_YEARS = 3
-PQR_SWING_MIN = 75 
+PQR_SWING_MIN = 10
 raw_days = os.environ.get("UAT_DAYS_AGO", "10")
 SIMULATE_DAYS_AGO = int(raw_days)
 
