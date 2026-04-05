@@ -1,10 +1,17 @@
-name: Quant Master Auto Scan
+name: UAT Quant Master Auto Scan
 
 on:
-  schedule:
-    - cron: '0 0 * * 1-5'
-    - cron: '30 13 * * 1-5'
-  workflow_dispatch:
+  workflow_dispatch:  # 👈 核心：刪除所有 push 同 schedule，只保留呢行
+    inputs:
+      days_ago:
+        description: '時光機回溯天數 (需配合 Python Code 修改，或作紀錄用途)'
+        required: false
+        default: '5'
+
+# 加上併發控制，防止多次點擊導致 Git 衝突
+concurrency:
+  group: git-push-group
+  cancel-in-progress: false
 
 permissions:
   contents: write
