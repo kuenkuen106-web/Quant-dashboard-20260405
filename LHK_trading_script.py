@@ -30,13 +30,16 @@ HISTORY_FILE = os.path.join(OUTPUT_DIR, "trade_history.json")
 # =============================================================================
 # 功能函數區 (Helper Functions)
 # =============================================================================
-def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish):
-    """【實時警報】將觸發嘅買賣訊號，以精美卡片形式推送到 Discord 手機 App"""
+def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources):
+    """【實時警報】確保接收並顯示來源標籤"""
     if not DISCORD_WEBHOOK_URL or "你的專屬碼" in DISCORD_WEBHOOK_URL: return
-    color = 65280 if is_bullish else 16711680 # 綠色代表做多，紅色代表做空
+    
+    source_str = " | ".join(sources) if sources else "動態掃描"
+    color = 65280 if is_bullish else 16711680 
+    
     embed_data = {
         "title": f"🚨 系統異動觸發: {ticker}",
-        "description": f"**{strategy_name}** 條件已達成！",
+        "description": f"**{strategy_name}** 條件已達成！\n🔍 來源: `{source_str}`",
         "color": color,
         "fields": [
             {"name": "💵 當前現價", "value": f"${price}", "inline": True},
@@ -62,19 +65,93 @@ trade_history = load_history()
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
 LOOKBACK_YEARS = 3       # 索取過去 3 年數據計 200天線
-PQR_SWING_MIN = 75       # 波段策略要求相對強度 (RS) 必須高於市場 75% 的股票
+PQR_SWING_MIN = 75       # 波段策略要求相對強度 (RS) 必須高於市場 75% 的股票 
+# 此參數定義了「強者恆強」的門檻。根據 Minervini 統計，大牛股在爆發前，其相對強度排名通常已處於市場前 25%。
 
 # =============================================================================
 # MODULE 1 & 2 — 雙市場數據引擎 (Data Fetching)
 # =============================================================================
 print("⏳ [1-3/7] 正在抓取美日雙市場數據 (V1 雙策略引擎)...")
 
-_US_STOCKS = ['AAPL','MSFT','NVDA','GOOGL','AMZN','META','TSLA','AVGO','LLY','JPM','V','MA','UNH','XOM','PG','COST','CRM','ADBE','NFLX','AMD']
-_JP_STOCKS = ['7203.T','8306.T','8058.T','9984.T','6861.T','9432.T','8031.T','6758.T','8001.T','8316.T','7974.T','4063.T','6920.T','8002.T']
-ALL_TICKERS = list(dict.fromkeys(_US_STOCKS + _JP_STOCKS + ['SPY', '^VIX', '^N225']))
+def build_dynamic_watchlist():
+    print("⏳ [1/7] 正在構建全球動態股票池...")
+    ticker_sources = {} # 修正：這裡必須是字典 {}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
 
-# 批量下載並處理缺失值 (Forward Fill)
-data_raw = yf.download(ALL_TICKERS, period=f"{LOOKBACK_YEARS}y", progress=False)
+    def add_to_map(tickers, source_label):
+        for t in tickers:
+            if not isinstance(t, str): continue
+            if t not in ticker_sources:
+                ticker_sources[t] = []
+            if source_label not in ticker_sources[t]:
+                ticker_sources[t].append(source_label)
+    # ---------------------------------------------------------
+    # 1. 獲取標普 500 全名單 (Wikipedia) - 用作全面回測基礎
+    # ---------------------------------------------------------
+    try:
+        sp500_url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+        sp500_table = pd.read_html(sp500_url)[0]
+        sp500_tickers = sp500_table['Symbol'].str.replace('.', '-').tolist()
+        add_to_map(sp500_tickers, "S&P500")
+        print(f"  ✅ 成功載入 S&P 500 (共 {len(sp500_tickers)} 隻)")
+    except Exception as e:
+        print(f"  ⚠️ S&P 500 載入失敗: {e}")
+
+    # ---------------------------------------------------------
+    # 2. 獲取 Finviz 異動股 (Unusual Volume & Top Gainers)
+    # ---------------------------------------------------------
+    # 呢度係捕捉「當日最熱門」標的關鍵
+    finviz_urls = [
+        ("https://finviz.com/screener.ashx?v=111&s=ta_topgainers", "Finviz升幅"),
+        ("https://finviz.com/screener.ashx?v=111&s=ta_unusualvolume", "Finviz異動")
+    ]
+    
+    for url, label in finviz_urls:
+        try:
+            response = requests.get(url, headers=headers)
+            found_tickers = pd.read_html(response.text)[-2][1].tolist()
+            found_tickers = [t for t in found_tickers if isinstance(t, str) and t.isupper() and len(t) <= 5]
+            add_to_map(found_tickers, label)
+            print(f"  🔥 捕捉到 {label} 標的: {len(found_tickers)} 隻")
+        except:
+            print(f"  ⚠️ {label} 抓取略過")
+
+    # ---------------------------------------------------------
+    # 3. 獲取日股動態名單 (Nikkei 225 + 當日熱門)
+    # ---------------------------------------------------------
+    try:
+        # A. 核心名單：日經 225
+        n225_url = 'https://en.wikipedia.org/wiki/Nikkei_225'
+        n225_table = pd.read_html(n225_url, match='Company')[0]
+        n225_tickers = (n225_table.iloc[:, 1].astype(str) + '.T').tolist()
+        add_to_map(n225_tickers, "NK225")
+        
+        # B. 🔥 捕捉日股當日熱門搜尋 (Trending in Japan)
+        # 透過 Yahoo Finance API 獲取日本市場熱門標的
+        jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
+        res_jp = requests.get(jp_trending_url, headers=headers)
+        if res_jp.status_code == 200:
+            jp_trending = [q['symbol'] for q in res_jp.json()['finance']['result'][0]['quotes']]
+            add_to_map(jp_trending, "JP熱門")
+            print(f"  🔥 捕捉到日股當日焦點: {len(jp_trending)} 隻")
+        print(f"  ✅ 成功構建日股動態池")
+    except Exception as e:
+        print(f"  ⚠️ 日股名單載入失敗: {e}")
+    
+    # ---------------------------------------------------------
+    # 4. 終極去重與輸出
+    # ---------------------------------------------------------
+    add_to_map(['SPY', '^VIX', '^N225'], "基準指數")
+    print(f"🎯 股票池構建完成，總計 {len(ticker_sources)} 隻標的！")
+    return ticker_sources
+
+# 將原本的 ALL_TICKERS 替換為調用這個函數
+TICKER_MAP = build_dynamic_watchlist()
+ALL_TICKERS = list(TICKER_MAP.keys())
+
+# [Commentary] 加入 threads=True 以加速 800 隻股票的下載
+# 加入 timeout=20 防止個別股票卡死導致 GitHub Actions 超時
+data_raw = yf.download(ALL_TICKERS, period=f"{LOOKBACK_YEARS}y", progress=False, threads=True, timeout=30, group_by='column')
 closes = data_raw['Close'].ffill(); highs = data_raw['High'].ffill(); lows = data_raw['Low'].ffill(); vols = data_raw['Volume'].ffill(); opens = data_raw['Open'].ffill()
 
 # 確立大盤基準 (用作牛熊過濾器)
@@ -120,6 +197,18 @@ short_term_results = []
 for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
     try:
         c = closes[ticker]; h = highs[ticker]; l = lows[ticker]; v = vols[ticker]; op = opens[ticker]
+        
+        # 策略需要計算 200天線 (SMA200) 和 一年 RS Rank
+        # 如果歷史數據少於 200 筆，計算結果會全是空值，必須過濾。
+        if len(c.dropna()) < 200:
+            print(f"⚠️ {ticker} 數據不足 200 筆，已跳過")
+            continue
+        
+        # 動態過濾：日股門檻 3億日圓 / 美股門檻 500萬美金
+        avg_dollar_vol = (c.tail(20) * v.tail(20)).mean()
+        min_liq = 300_000_000 if ticker.endswith('.T') else 5_000_000
+        if avg_dollar_vol < min_liq: continue
+        
         is_jp = ticker.endswith('.T')
         
         # 計算技術指標
@@ -144,17 +233,30 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
         rec_volat = (c.rolling(10).max() - c.rolling(10).min()) / c.rolling(10).max() # 波動收縮
         
         is_vcp = (base_dd <= 0.35) and (rec_volat <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
+        # 擠壓判定標準為「當前寬度 < 過去半年最小值 * 1.1」。這捕捉了波動率極度壓抑後的爆發前兆。
         is_bb_sqz = (bb_width.iloc[-1] <= bb_width.rolling(120).min().iloc[-1] * 1.1)
+
+        # 獲取該股票嘅來源標籤
+        sources = TICKER_MAP.get(ticker, ["動態掃描"])
 
         if is_bull and rs >= PQR_SWING_MIN and (is_vcp or is_bb_sqz):
             tag_name = "🏆 VCP 突破" if is_vcp else "💥 BB 擠壓"
             sl_p = round(cp - 2.5 * catr, 2)
             tp_p = round(cp + 4.5 * catr, 2)
             
-            swing_results.append({'tk': ticker, 'pqr': round(rs, 0), 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'tag': tag_name, 'type': 'SWING'})
+            swing_results.append({
+                'tk': ticker, 
+                'pqr': round(rs, 0), 
+                'px': round(cp, 2), 
+                'sl': sl_p, 
+                'tp': tp_p, 
+                'tag': tag_name, 
+                'type': 'SWING',
+                'sources': sources # 確保傳入列表供 HTML 使用
+            })
             
             # 【修復】加入波段策略嘅 Discord 推送
-            send_discord_alert(ticker, tag_name, round(cp, 2), sl_p, tp_p, True)
+            send_discord_alert(ticker, tag_name, round(cp, 2), sl_p, tp_p, True, sources)
             
             # 寫入歷史庫 (防止重複寫入)
             if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
@@ -169,13 +271,16 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
 
         if is_gap_up or is_oversold:
             strategy_tag = "⚡ 缺口動能" if is_gap_up else "📉 極度超賣"
-            sl_price = round(cp * 0.95, 2) # 短線止損 5%
-            tp_price = round(cp * 1.05, 2) # 短線止盈 5%
+            sl_price = round(cp * 0.95, 2)
+            tp_price = round(cp * 1.05, 2)
             
-            short_term_results.append({'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'tag': strategy_tag, 'type': 'SHORT'})
-            send_discord_alert(ticker, strategy_tag, round(cp, 2), sl_price, tp_price, True)
+            short_term_results.append({
+                'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 
+                'tag': strategy_tag, 'type': 'SHORT', 'sources': sources
+            })
+            
+            send_discord_alert(ticker, strategy_tag, round(cp, 2), sl_price, tp_price, True, sources)
 
-            # 寫入歷史庫
             if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
                 trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SHORT'})
     except: pass
@@ -208,6 +313,7 @@ if DISCORD_SUMMARY_WEBHOOK and closed_this_run:
     except: pass
 
 # 確保 JSON 檔案只保留最近 100 筆，避免網頁載入過慢
+# 這能確保 JSON 檔案體積精簡，加快 GitHub Pages 的加載速度，同時保留足夠的樣本計算勝率。
 with open(HISTORY_FILE, "w", encoding="utf-8") as f:
     json.dump(trade_history[-100:], f, indent=4)
 
@@ -239,7 +345,9 @@ html = f"""<!DOCTYPE html>
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-indigo-500/50 transition shadow-lg">
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-2xl font-black text-white">{d['tk']}</span>
-                        <span class="text-[10px] font-bold px-2 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded">{d['tag']}</span>
+                        <div class="flex flex-wrap justify-end gap-1">
+                            {" ".join([f'<span class="text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">{s}</span>' for s in d['sources']])}
+                        </div>
                     </div>
                     <div class="flex justify-between text-xs mb-4 text-slate-400">
                         <span>PQR: {d['pqr']}</span>
