@@ -1,4 +1,4 @@
-# UAT=============================================================================
+# backtest=============================================================================
 # ⚙️ V1 PRO QUANT DUAL-STRATEGY (UAT 時光機模式)
 # 核心功能：模擬過去交易日 / 雙引擎演算 / 來源追蹤 / 自動結算
 # =============================================================================
@@ -79,21 +79,21 @@ def build_dynamic_watchlist():
 
     def add_to_map(tickers, source_label):
         for t in tickers:
-            if not isinstance(t, str): continue
-            if t not in ticker_sources:
-                ticker_sources[t] = []
-            if source_label not in ticker_sources[t]:
-                ticker_sources[t].append(source_label)
+            if not isinstance(t, str) or len(t) < 1: continue
+            # 統一轉換 Ticker 格式 (例如將 . 轉為 -)
+            clean_t = t.strip().replace('.', '-')
+            if clean_t not in ticker_sources:
+                ticker_sources[clean_t] = []
+            if source_label not in ticker_sources[clean_t]:
+                ticker_sources[clean_t].append(source_label)
     # ---------------------------------------------------------
     # 1. 獲取標普 500 全名單 ((穩定版：DataHub CSV)) - 用作全面回測基礎
     # ---------------------------------------------------------
     try:
-        # 這是 DataHub 維護的 S&P 500 CSV
         csv_url = "https://raw.githubusercontent.com/datasets/s-p-500-companies/master/data/constituents.csv"
-        df_sp = pd.read_csv(csv_url)
-        sp500_tickers = df_sp['Symbol'].str.replace('.', '-').tolist()
-        add_to_map(sp500_tickers, "S&P500")
-        print(f"  ✅ 成功從 DataHub 載入 S&P 500 (共 {len(sp500_tickers)} 隻)")
+        df_sp = pd.read_csv(csv_url, timeout=10)
+        add_to_map(df_sp['Symbol'].tolist(), "S&P500")
+        print(f"  ✅ 成功從 DataHub 載入 S&P 500")
     except Exception as e:
         print(f"  ⚠️ S&P 500 載入失敗，嘗試 Fallback 機制")
         # 如果 fail，可以手動加入2026/04/05 list
@@ -161,14 +161,18 @@ def build_dynamic_watchlist():
         ("https://finviz.com/screener.ashx?v=111&s=ta_topgainers", "Finviz升幅"),
         ("https://finviz.com/screener.ashx?v=111&s=ta_unusualvolume", "Finviz異動")
     ]
-    
     for url, label in finviz_urls:
         try:
-            response = requests.get(url, headers=headers)
-            found_tickers = pd.read_html(response.text)[-2][1].tolist()
-            found_tickers = [t for t in found_tickers if isinstance(t, str) and t.isupper() and len(t) <= 5]
-            add_to_map(found_tickers, label)
-            print(f"  🔥 捕捉到 {label} 標的: {len(found_tickers)} 隻")
+            res = requests.get(url, headers=headers, timeout=10)
+            tables = pd.read_html(res.text)
+            # Finviz 的股票代號通常在最後幾個表格中，且長度為 1-5 字符
+            for df in tables[-3:]: 
+                if 1 in df.columns:
+                    found = [str(t) for t in df[1].tolist() if str(t).isupper() and 1 <= len(str(t)) <= 5]
+                    if found:
+                        add_to_map(found, label)
+                        print(f"  🔥 捕捉到 {label}: {len(found)} 隻")
+                        break
         except:
             print(f"  ⚠️ {label} 抓取略過")
 
@@ -223,13 +227,12 @@ def build_dynamic_watchlist():
         # 執行合併
         add_to_map(nk225_tickers, "NK225")
 
-    
-
     add_to_map(['SPY', '^VIX', '^N225'], "基準指數")
     return ticker_sources
 
 TICKER_MAP = build_dynamic_watchlist()
 ALL_TICKERS = list(TICKER_MAP.keys())
+print(f"此run觀察名單: {ALL_TICKERS}")
 
 # 下載數據
 data_raw = yf.download(ALL_TICKERS, period=f"{LOOKBACK_YEARS}y", progress=False, threads=True, timeout=30, group_by='column')
