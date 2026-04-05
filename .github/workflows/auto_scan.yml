@@ -31,7 +31,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         # 【重要檢查】請確保下面呢個檔案名，同你 Repo 裡面嘅 Python 檔案名一模一樣！
         # 如果你個檔案叫 main.py，請將下面改做 run: python main.py
-        run: python quant_v5_dual.py
+        run: python LHK_trading_script.py
 
       - name: 💾 更新 Dashboard 網頁檔案
         run: |
