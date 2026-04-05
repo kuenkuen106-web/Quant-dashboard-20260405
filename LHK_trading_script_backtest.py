@@ -1,4 +1,4 @@
-# backtest=============================================================================
+# UAT=============================================================================
 # ⚙️ V1 PRO QUANT DUAL-STRATEGY (UAT 時光機模式)
 # 核心功能：模擬過去交易日 / 雙引擎演算 / 來源追蹤 / 自動結算
 # =============================================================================
@@ -18,7 +18,7 @@ plt.ioff()
 # =============================================================================
 # 系統環境設定
 # =============================================================================
-OUTPUT_DIR = "docs" 
+OUTPUT_DIR = "docs/UAT" 
 CHARTS_DIR = os.path.join(OUTPUT_DIR, "charts")
 os.makedirs(CHARTS_DIR, exist_ok=True)
 
@@ -463,8 +463,8 @@ html = f"""<!DOCTYPE html>
     </footer>
 
     <script>
-    // 自動讀取 trade_history.json 並渲染表格
-    fetch('trade_history.json')
+    // 自動讀取 uat_trade_history.json 並渲染表格
+    fetch('uat_trade_history.json')
       .then(response => response.json())
       .then(data => {{
         const tbody = document.getElementById('history-table-body');
