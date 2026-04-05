@@ -63,7 +63,7 @@ trade_history = load_history()
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
 LOOKBACK_YEARS = 3
-PQR_SWING_MIN = 1 
+PQR_SWING_MIN = 75 
 raw_days = os.environ.get("UAT_DAYS_AGO", "10")
 SIMULATE_DAYS_AGO = int(raw_days)
 
@@ -182,22 +182,20 @@ def build_dynamic_watchlist():
     try:
         n225_url = 'https://en.wikipedia.org/wiki/Nikkei_225'
         res = requests.get(n225_url, headers=headers, timeout=10)
-        
-        # 唔好用 match='Company'，直接攞晒所有 Table 慢慢揀
-        tables = pd.read_html(res.text)
+        # 抓取所有表格
+        all_tables = pd.read_html(res.text)
         
         found_nk = []
         import re
+        # 遍歷所有表格，尋找包含 4 位數字代號的表
+        for table in all_tables:
+            # 嘗試尋找符合日股代號格式的單元格
+            all_cells = table.astype(str).values.flatten()
+            codes = [f"{m}.T" for m in all_cells if re.match(r'^\d{4}$', m)]
+            found_nk.extend(codes)
         
-        # 遍歷網頁入面所有表格，搵出符合日股 4 位數格式嘅代號
-        for df in tables:
-            # 將成個表格轉成文字串流
-            all_values = df.astype(str).values.flatten()
-            # 用 Regex 搵出純 4 位數字 (例如 9984)
-            codes = [f"{m}.T" for m in all_values if re.match(r'^\d{4}$', m)]
-            if len(codes) >= 100: # NK225 應該至少有 225 隻，攞到 100 隻以上就代表搵啱表
-                found_nk = list(set(codes)) # 去重
-                break
+        # 去重
+        found_nk = list(dict.fromkeys(found_nk))
         
         if found_nk:
             add_to_map(found_nk, "NK225")
@@ -305,19 +303,30 @@ print(f"⏳ [4-6/7] 正在按 {today_str} 視角進行策略演算...")
 swing_results = []
 short_term_results = []
 
+funnel = {"total": 0, "liq_fail": 0, "market_fail": 0, "rs_fail": 0, "vcp_fail": 0, "ok": 0}
+
 for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
     try:
+        funnel["total"] += 1
         c = closes[ticker]; h = highs[ticker]; l = lows[ticker]; v = vols[ticker]; op = opens[ticker]
         if len(c.dropna()) < 200: continue
         
         avg_dollar_vol = (c.tail(20) * v.tail(20)).mean()
         min_liq = 300_000_000 if ticker.endswith('.T') else 5_000_000
-        if avg_dollar_vol < min_liq: continue
+        
+        if avg_dollar_vol < min_liq: 
+            funnel["liq_fail"] += 1
+            continue
         
         is_jp = ticker.endswith('.T')
         sma20 = c.rolling(20).mean(); sma50 = c.rolling(50).mean(); sma200 = c.rolling(200).mean()
         atr = (h-l).rolling(14).mean(); cp = float(c.iloc[-1]); catr = float(atr.iloc[-1])
         rs = rs_rank[ticker].iloc[-1]
+        
+        if rs < PQR_SWING_MIN:
+            funnel["rs_fail"] += 1
+            continue
+
         
         std20 = c.rolling(20).std(); bb_lower = sma20 - (2 * std20); bb_width = (4 * std20) / sma20
         delta = c.diff(); gain = (delta.where(delta > 0, 0)).rolling(14).mean(); loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
@@ -326,6 +335,10 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
         bench_200 = n225_200.iloc[-1] if is_jp else spy_200.iloc[-1]
         bench_c = n225_c.iloc[-1] if is_jp else spy_c.iloc[-1]
         is_bull = bench_c > bench_200
+        
+        if not (bench_c > bench_200): 
+            funnel["market_fail"] += 1
+            continue
 
         sources = TICKER_MAP.get(ticker, ["動態掃描"])
 
@@ -334,6 +347,10 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
         rec_volat = (c.rolling(10).max() - c.rolling(10).min()) / c.rolling(10).max()
         is_vcp = (base_dd <= 0.35) and (rec_volat <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
         is_bb_sqz = (bb_width.iloc[-1] <= bb_width.rolling(120).min().iloc[-1] * 1.1)
+
+        if not is_vcp and not is_bb_sqz:
+            funnel["vcp_fail"] += 1
+            continue
 
         if is_bull and rs >= PQR_SWING_MIN and (is_vcp or is_bb_sqz):
             tag_name = "🏆 VCP 突破" if is_vcp else "💥 BB 擠壓"
@@ -356,6 +373,17 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
             if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
                 trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SHORT'})
     except: pass
+
+# 循環完咗之後 Print 報告
+print(f"\n📊 --- UAT 策略漏斗報告 ({today_str}) ---")
+print(f"總掃描數: {funnel['total']}")
+print(f"❌ 成交量不足: {funnel['liq_fail']}")
+print(f"❌ 大盤走勢差: {funnel['market_fail']} (卡死主因!)")
+print(f"❌ RS 排名不足: {funnel['rs_fail']}")
+print(f"❌ 形態未收縮: {funnel['vcp_fail']}")
+print(f"✅ 符合條件: {funnel['ok']}")
+print("------------------------------------------\n")
+
 
 # =============================================================================
 # MODULE 6 — 存檔
