@@ -18,7 +18,7 @@ plt.ioff()
 # =============================================================================
 # 系統環境設定
 # =============================================================================
-OUTPUT_DIR = "docs" 
+OUTPUT_DIR = "docs/backtest" 
 CHARTS_DIR = os.path.join(OUTPUT_DIR, "charts")
 os.makedirs(CHARTS_DIR, exist_ok=True)
 
