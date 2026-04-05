@@ -18,7 +18,7 @@ plt.ioff()
 # =============================================================================
 # 系統環境設定
 # =============================================================================
-OUTPUT_DIR = "docs/backtest" 
+OUTPUT_DIR = "docs" 
 CHARTS_DIR = os.path.join(OUTPUT_DIR, "charts")
 os.makedirs(CHARTS_DIR, exist_ok=True)
 
@@ -64,7 +64,8 @@ trade_history = load_history()
 # =============================================================================
 LOOKBACK_YEARS = 3
 PQR_SWING_MIN = 75 
-SIMULATE_DAYS_AGO = 10  # 🌟 【時光機設定】設定你想返去幾多個交易日前 (0 = 真實今日)
+raw_days = os.environ.get("UAT_DAYS_AGO", "10")
+SIMULATE_DAYS_AGO = int(raw_days)
 
 # =============================================================================
 # MODULE 1 & 2 — 數據引擎與時光機截斷
