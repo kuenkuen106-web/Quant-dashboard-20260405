@@ -382,7 +382,7 @@ html = f"""<!DOCTYPE html>
 </head>
 <body class="bg-[#020617] text-slate-300 p-8 font-sans">
     <header class="mb-10 text-center">
-        <h1 class="text-5xl font-black text-white italic tracking-tighter">QUANT HUB <span class="text-indigo-500">V1</span></h1>
+        <h1 class="text-5xl font-black text-white italic tracking-tighter">UAT <span class="text-indigo-500">V1</span></h1>
         <p class="text-slate-500 mt-2 font-bold uppercase tracking-widest text-xs">波段趨勢 (Swing) x 短線游擊 (Tactical) 雙系統</p>
     </header>
 
