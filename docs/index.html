@@ -2,23 +2,22 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"></script>
-    <title>V5.0 DUAL STRATEGY HUB</title>
+    <title>V1 QUANT MASTER</title>
 </head>
-<body class="bg-[#020617] text-slate-300 p-8">
+<body class="bg-[#020617] text-slate-300 p-8 font-sans">
     <header class="mb-10 text-center">
-        <h1 class="text-5xl font-black text-white italic tracking-tighter">QUANT HUB <span class="text-indigo-500">V5.0</span></h1>
+        <h1 class="text-5xl font-black text-white italic tracking-tighter">QUANT HUB <span class="text-indigo-500">V1</span></h1>
         <p class="text-slate-500 mt-2 font-bold uppercase tracking-widest text-xs">波段趨勢 (Swing) x 短線游擊 (Tactical) 雙系統</p>
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
-        
         <div class="space-y-6">
             <h2 class="text-2xl font-black text-indigo-400 border-b-2 border-indigo-500/30 pb-2 flex items-center gap-2">
                 🏆 波段長抱 (1-4 週)
                 <span class="text-[10px] bg-indigo-500/20 px-2 py-1 rounded text-indigo-300 font-normal">Minervini SEPA 邏輯</span>
             </h2>
             <div class="grid grid-cols-1 gap-4">
-                <p class="text-slate-600">目前無波段訊號</p>
+                <p class="text-slate-600 italic">目前無波段訊號</p>
             </div>
         </div>
 
@@ -28,14 +27,69 @@
                 <span class="text-[10px] bg-amber-500/20 px-2 py-1 rounded text-amber-300 font-normal">高勝率事件驅動</span>
             </h2>
             <div class="grid grid-cols-1 gap-4">
-                <p class="text-slate-600">目前無短線訊號</p>
+                <p class="text-slate-600 italic">目前無短線訊號</p>
             </div>
         </div>
-
     </div>
 
-    <footer class="mt-20 text-center text-slate-600 text-[10px] uppercase tracking-widest">
-        Quant System V5.0 | 數據源：Yahoo Finance | 僅供學術研究使用
+    <section class="max-w-7xl mx-auto mt-16">
+        <h2 class="text-2xl font-black text-emerald-400 border-b-2 border-emerald-500/30 pb-2 mb-6 flex justify-between items-end">
+            <span>📜 歷史追蹤與勝率統計</span>
+            <span class="text-sm text-slate-400 font-normal">總結案: 0 筆 | 勝率: <span class="text-emerald-400 font-bold">0%</span></span>
+        </h2>
+        <div class="overflow-x-auto bg-slate-900 rounded-2xl border border-slate-800 shadow-xl">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-black/60 text-slate-400 uppercase font-black text-[10px] tracking-wider">
+                    <tr>
+                        <th class="p-4">建議日期</th>
+                        <th class="p-4">代號</th>
+                        <th class="p-4">買入價</th>
+                        <th class="p-4">結案價 (現價)</th>
+                        <th class="p-4">狀態</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer class="mt-20 pb-10 text-center text-slate-600 text-[10px] uppercase tracking-widest">
+        Quant System V1 | 自動結算與推送 | 僅供學術研究使用
     </footer>
+
+    <script>
+    // 自動讀取 trade_history.json 並渲染表格
+    fetch('trade_history.json')
+      .then(response => response.json())
+      .then(data => {
+        const tbody = document.getElementById('history-table-body');
+        if(data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500">尚無歷史交易紀錄</td></tr>';
+            return;
+        }
+        // 將資料反轉，顯示最新 15 筆紀錄
+        data.reverse().slice(0, 15).forEach(t => { 
+          const isWin = t.status.includes('✅');
+          const isLoss = t.status.includes('❌');
+          const statusColor = isWin ? 'text-emerald-400 bg-emerald-500/10' : (isLoss ? 'text-red-400 bg-red-500/10' : 'text-slate-300 bg-slate-700/50');
+          
+          const row = `
+            <tr class="border-t border-slate-800 hover:bg-slate-800/50 transition">
+              <td class="p-4 text-slate-400 text-xs">${t.date}</td>
+              <td class="p-4 font-black text-white flex items-center gap-2">
+                ${t.tk} <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">${t.type}</span>
+              </td>
+              <td class="p-4 text-slate-300">$${t.px}</td>
+              <td class="p-4 font-bold ${isWin ? 'text-emerald-400' : (isLoss ? 'text-red-400' : 'text-white')}">$${t.last_px}</td>
+              <td class="p-4">
+                <span class="px-2 py-1 rounded text-xs font-bold ${statusColor}">${t.status}</span>
+              </td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+      })
+      .catch(e => console.log('尚未建立歷史檔案:', e));
+    </script>
 </body>
 </html>
