@@ -1,0 +1,40 @@
+name: Quant Master Auto Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * 1-5'   # 日股開市 (UTC 00:00 / HK 08:00)
+    - cron: '30 13 * * 1-5' # 美股開市 (UTC 13:30 / HK 21:30)
+  workflow_dispatch: # 容許你隨時手動撳掣行 Code
+
+# 授權 GitHub 可以將產出嘅 HTML 網頁 Save 返入去
+permissions:
+  contents: write
+
+jobs:
+  run-strategy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 讀取代碼 (Checkout)
+        uses: actions/checkout@v3
+
+      - name: 🐍 設定 Python 環境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 📦 安裝依賴工具
+        run: pip install -r requirements.txt
+
+      - name: 🚀 執行量化掃描與發送 Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python quant_v5_dual.py
+
+      - name: 💾 更新 Dashboard 網頁檔案
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          # 如果有新圖表或新數據，就 Commit 並 Push
+          git commit -m "Auto-update Dashboard" || echo "No changes to commit"
+          git push
