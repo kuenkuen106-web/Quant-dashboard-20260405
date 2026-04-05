@@ -6,7 +6,7 @@ on:
       days_ago:
         description: '時光機回溯天數 (需配合 Python Code 修改，或作紀錄用途)'
         required: false
-        default: '5'
+        default: '30'
 
 # 加上併發控制，防止多次點擊導致 Git 衝突
 concurrency:
