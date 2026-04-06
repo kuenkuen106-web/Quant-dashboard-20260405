@@ -56,7 +56,7 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
             print(f"⚠️ Discord 拒絕接收 (429 Rate Limit) - 傳送太快！")
         
         # 👇 核心：強制定程式停 0.5 秒，防止被 Discord Ban
-        time.sleep(0.5) 
+        time.sleep(1) 
         
     except Exception as e: 
         print(f"⚠️ Discord 連線錯誤: {e}")
