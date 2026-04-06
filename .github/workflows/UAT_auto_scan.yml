@@ -35,7 +35,8 @@ jobs:
 
       - name: 🚀 執行量化掃描與發送 Discord
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BACKTEST_WEBHOOK_URL }}
+          DISCORD_BACKTEST_SUMMARY_WEBHOOK: ${{ secrets.DISCORD_BACKTEST_SUMMARY_WEBHOOK }}
           # 將 GitHub UI 嘅輸入傳入 Python 自然環境
           UAT_DAYS_AGO: ${{ github.event.inputs.days_ago }}
         # 【重要檢查】請確保下面呢個檔案名，同你 Repo 裡面嘅 Python 檔案名一模一樣！
