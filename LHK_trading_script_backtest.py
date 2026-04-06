@@ -59,6 +59,7 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
         
     except Exception as e: 
         print(f"⚠️ Discord 連線錯誤: {e}")
+
 def load_history():
     if os.path.exists(HISTORY_FILE):
         try:
@@ -89,8 +90,12 @@ def build_dynamic_watchlist():
     def add_to_map(tickers, source_label):
         for t in tickers:
             if not isinstance(t, str) or len(t) < 1: continue
-            # 統一轉換 Ticker 格式 (例如將 . 轉為 -)
-            clean_t = t.strip().replace('.', '-')
+            
+            # 【修正】只針對沒有 .T 的美股處理點號
+            clean_t = t.strip()
+            if not clean_t.endswith('.T'):
+                clean_t = clean_t.replace('.', '-')
+                
             if clean_t not in ticker_sources:
                 ticker_sources[clean_t] = []
             if source_label not in ticker_sources[clean_t]:
@@ -192,21 +197,41 @@ def build_dynamic_watchlist():
         n225_url = 'https://en.wikipedia.org/wiki/Nikkei_225'
         res = requests.get(n225_url, headers=headers, timeout=10)
         all_tables = pd.read_html(res.text)
+        n225_table = max(all_tables, key=len) # 取行數最多的表格
         
         import re
         found_nk = []
-        for df in all_tables:
-            # 搵出所有 4 位數字嘅 cell
-            cells = df.astype(str).values.flatten()
-            found_nk.extend([f"{m}.T" for m in cells if re.match(r'^\d{4}$', m)])
+        target_col = None
         
-        found_nk = list(dict.fromkeys(found_nk)) # 去重
-        
-        if found_nk:
+        # 優先方法：搵明確嘅標題 (Wikipedia 通常叫 'Code' 或 'Ticker')
+        for col in n225_table.columns:
+            col_name = str(col).lower()
+            if 'code' in col_name or 'ticker' in col_name or 'symbol' in col_name:
+                target_col = col
+                break
+                
+        # 後備方法：如果標題改咗名，用「數值特徵」去估
+        if target_col is None:
+            for col in n225_table.columns:
+                # 攞頭 5 個有效數值測試
+                sample_vals = n225_table[col].dropna().astype(str).tolist()[:5]
+                # 如果全部都係 4 位數...
+                if sample_vals and all(re.match(r'^\d{4}$', str(x)) for x in sample_vals):
+                    # 並且有數字大於 3000 (證明肯定唔係年份)
+                    if any(int(x) > 3000 for x in sample_vals if str(x).isdigit()):
+                        target_col = col
+                        break
+
+        # 如果成功定位到正確欄位，就開始提取
+        if target_col is not None:
+            found_nk = [f"{str(x)}.T" for x in n225_table[target_col] if re.match(r'^\d{4}$', str(x))]
+            found_nk = list(dict.fromkeys(found_nk)) # 去重
+            
+        if len(found_nk) > 0:
             add_to_map(found_nk, "NK225")
-            print(f"  ✅ 成功從 Wikipedia 載入 NK225 (共 {len(found_nk)} 隻)")
+            print(f"  ✅ 成功從 Wikipedia 精確載入 NK225 (共 {len(found_nk)} 隻)")
         else:
-            raise ValueError("找不到符合格式的日股表格")
+            raise ValueError("找不到股票代號欄位 (可能被誤認為年份)")
     except Exception as e:
         print(f"  ⚠️ 日股名單載入失敗: {e}")
         # 如果 fail, 手動加入2026/04/05 list
