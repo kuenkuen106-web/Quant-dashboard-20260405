@@ -1,6 +1,6 @@
-# =============================================================================
-# ⚙️ V1 PRO QUANT DUAL-STRATEGY (The Ultimate Edition)
-# 核心功能：波段與短線雙引擎 / 雙市場監控 / Discord 實時推送 / 自動戰績覆盤系統
+# backtest=============================================================================
+# ⚙️ V1 PRO QUANT DUAL-STRATEGY (UAT 時光機模式)
+# 核心功能：模擬過去交易日 / 雙引擎演算 / 來源追蹤 / 自動結算
 # =============================================================================
 
 import pandas as pd, numpy as np, yfinance as yf, matplotlib
@@ -9,63 +9,58 @@ import matplotlib.pyplot as plt, matplotlib.dates as mdates, concurrent.futures
 import warnings, os, datetime, json, logging, webbrowser, time
 import requests
 
-# 關閉不必要嘅警告，保持 Terminal 乾淨
+# 關閉不必要嘅警告
 logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 warnings.filterwarnings('ignore')
 plt.style.use('dark_background')
 plt.ioff()
 
 # =============================================================================
-# 系統環境設定 (路徑與 Webhook)
+# 系統環境設定
 # =============================================================================
-OUTPUT_DIR = "docs" # GitHub Pages 預設讀取嘅資料夾
+OUTPUT_DIR = "docs/UAT" 
 CHARTS_DIR = os.path.join(OUTPUT_DIR, "charts")
 os.makedirs(CHARTS_DIR, exist_ok=True)
 
-# 讀取 GitHub Secrets (保護私隱，避免 URL 外洩)
-DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
-DISCORD_SUMMARY_WEBHOOK = os.environ.get("DISCORD_SUMMARY_WEBHOOK", "")
-HISTORY_FILE = os.path.join(OUTPUT_DIR, "trade_history.json")
+DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_BACKTEST_WEBHOOK_URL", "")
+DISCORD_SUMMARY_WEBHOOK = os.environ.get("DISCORD_BACKTEST_SUMMARY_WEBHOOK", "")
+HISTORY_FILE = os.path.join(OUTPUT_DIR, "uat_trade_history.json")
 
 # =============================================================================
-# 功能函數區 (Helper Functions)
+# 功能函數區
 # =============================================================================
 def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources):
-    """【實時警報】加入 UAT 標記與來源顯示"""
+    """【實時警報】加入 UAT 標記、來源顯示及自動幣種"""
     if not DISCORD_WEBHOOK_URL: 
-        print(f"⚠️ 未設定 Webhook URL，跳過發送 {ticker}") # 加呢行等你知道係咪讀唔到 URL
+        print(f"⚠️ 未設定 Webhook URL，跳過發送 {ticker}") 
         return
     
     # 👇 自動判定幣種符號
     unit = "¥" if ticker.endswith(".T") else "$"
-
+    
     source_str = " | ".join(sources) if sources else "動態掃描"
     color = 65280 if is_bullish else 16711680 
     
     embed_data = {
-        "title": f"🚨 系統異動觸發: {ticker}",
+        "title": f"🚨 [UAT 模擬] 系統異動觸發: {ticker}",
         "description": f"**{strategy_name}** 條件已達成！\n🔍 來源: `{source_str}`",
         "color": color,
         "fields": [
-            {"name": "💵 當前現價", "value": f"{unit}{price}", "inline": True},
-            {"name": "🛑 嚴格止損", "value": f"{unit}{sl}", "inline": True},
-            {"name": "🎯 目標止盈", "value": f"{unit}{tp}", "inline": True}
+            {"name": "💵 模擬當時價格", "value": f"{unit}{price}", "inline": True},
+            {"name": "🛑 建議止損", "value": f"{unit}{sl}", "inline": True},
+            {"name": "🎯 建議止盈", "value": f"{unit}{tp}", "inline": True}
         ],
-        "footer": {"text": "V1 Quant Master 實時監控系統"}
+        "footer": {"text": f"時光機模式執行中 | 模擬日期: {today_str}"}
     }
     try: 
         res = requests.post(DISCORD_WEBHOOK_URL, json={"embeds": [embed_data]})
         if res.status_code == 429:
             print(f"⚠️ Discord 拒絕接收 (429 Rate Limit) - 傳送太快！")
-        
-        # 👇 核心：強制定程式停 0.5 秒，防止被 Discord Ban
-        time.sleep(0.5) 
-        
+        time.sleep(0.5) # 防止 Discord 洗版封鎖
     except Exception as e: 
         print(f"⚠️ Discord 連線錯誤: {e}")
 
 def load_history():
-    """【記憶讀取】開機時讀取過去嘅交易紀錄，用嚟做今日嘅勝負結算"""
     if os.path.exists(HISTORY_FILE):
         try:
             with open(HISTORY_FILE, "r", encoding="utf-8") as f: return json.load(f)
@@ -77,14 +72,15 @@ trade_history = load_history()
 # =============================================================================
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
-LOOKBACK_YEARS = 3       # 索取過去 3 年數據計 200天線
-PQR_SWING_MIN = 75       # 波段策略要求相對強度 (RS) 必須高於市場 75% 的股票 
-# 此參數定義了「強者恆強」的門檻。根據 Minervini 統計，大牛股在爆發前，其相對強度排名通常已處於市場前 25%。
+LOOKBACK_YEARS = 5
+PQR_SWING_MIN = 75
+raw_days = os.environ.get("UAT_DAYS_AGO", "10")
+SIMULATE_DAYS_AGO = int(raw_days)
 
 # =============================================================================
-# MODULE 1 & 2 — 雙市場數據引擎 (Data Fetching)
+# MODULE 1 & 2 — 數據引擎與時光機截斷
 # =============================================================================
-print("⏳ [1-3/7] 正在抓取美日雙市場數據 (V1 雙策略引擎)...")
+print(f"⏳ [1-3/7] 正在構建股票池與抓取歷史數據...")
 
 def build_dynamic_watchlist():
     print("⏳ [1/7] 正在構建全球動態股票池...")
@@ -282,48 +278,57 @@ def build_dynamic_watchlist():
     add_to_map(['SPY', '^VIX', '^N225'], "基準指數")
     return ticker_sources
 
-# 將原本的 ALL_TICKERS 替換為調用這個函數
 TICKER_MAP = build_dynamic_watchlist()
 ALL_TICKERS = list(TICKER_MAP.keys())
 print(f"此run觀察名單: {ALL_TICKERS}")
 
-# [Commentary] 加入 threads=True 以加速 800 隻股票的下載
-# 加入 timeout=20 防止個別股票卡死導致 GitHub Actions 超時
+# 下載數據
 data_raw = yf.download(ALL_TICKERS, period=f"{LOOKBACK_YEARS}y", progress=False, threads=True, timeout=30, group_by='column')
 closes = data_raw['Close'].ffill(); highs = data_raw['High'].ffill(); lows = data_raw['Low'].ffill(); vols = data_raw['Volume'].ffill(); opens = data_raw['Open'].ffill()
 
-# 確立大盤基準 (用作牛熊過濾器)
+# ---------------------------------------------------------------------
+# 🕒 【時光機關鍵邏輯】抹除「未來」數據
+# ---------------------------------------------------------------------
+if SIMULATE_DAYS_AGO > 0:
+    print(f"⏰ [時光機] 正在抹除最近 {SIMULATE_DAYS_AGO} 天數據，回溯中...")
+    closes = closes.iloc[:-SIMULATE_DAYS_AGO]
+    highs = highs.iloc[:-SIMULATE_DAYS_AGO]
+    lows = lows.iloc[:-SIMULATE_DAYS_AGO]
+    vols = vols.iloc[:-SIMULATE_DAYS_AGO]
+    opens = opens.iloc[:-SIMULATE_DAYS_AGO]
+# ---------------------------------------------------------------------
+
+# 基於模擬日期計算指標
+today_str = closes.index[-1].strftime('%Y-%m-%d')
+print(f"📅 [UAT] 模擬今日日期：{today_str}")
+
 vix_c = closes['^VIX'].ffill()
 spy_c = closes['SPY'].ffill(); spy_200 = spy_c.rolling(200).mean()
 n225_c = closes['^N225'].ffill(); n225_200 = n225_c.rolling(200).mean()
-
-# 計算基礎指標：過去一年的相對強度排名
 rs_rank = (closes / closes.shift(252) - 1).rank(axis=1, pct=True) * 99 + 1
 
 # =============================================================================
-# MODULE 3 — 戰績自動結算系統 (Auto-Replay & Settlement)
+# MODULE 3 — 戰績自動結算系統
 # =============================================================================
-current_prices = closes.iloc[-1].to_dict() # 擷取今日最新收市價
-closed_this_run = []                       # 紀錄今日中咗止盈/止損嘅單
-today_str = datetime.datetime.now().strftime('%Y-%m-%d')
+current_prices = closes.iloc[-1].to_dict() 
+closed_this_run = []
 
 for trade in trade_history:
-    if trade['status'] == 'OPEN':
-        tk = trade['tk']
+    if trade.get('status') == 'OPEN':
+        tk = trade.get('tk')
         if tk in current_prices and not pd.isna(current_prices[tk]):
-            now_px = round(current_prices[tk], 2)
+            now_px = round(float(current_prices[tk]), 2)
             trade['last_px'] = now_px
-
+            
             # 使用 .get() 提取，防止 KeyError
             tp = trade.get('tp')
             sl = trade.get('sl')
             
-            # 結算邏輯：升穿目標價 (Take Profit) 或 跌穿止損價 (Stop Loss)
-            if now_px >= trade['tp']:
+            if tp is not None and now_px >= tp:
                 trade['status'] = '✅ TAKE PROFIT'
                 trade['close_date'] = today_str
                 closed_this_run.append(trade)
-            elif now_px <= trade['sl']:
+            elif sl is not None and now_px <= sl:
                 trade['status'] = '❌ STOP LOSS'
                 trade['close_date'] = today_str
                 closed_this_run.append(trade)
@@ -451,7 +456,7 @@ print(f"✅ 符合條件: {funnel['ok']}")
 print("------------------------------------------\n")
 
 # =============================================================================
-# MODULE 6 — 總結算與數據持久化 (Stats & JSON Dump)
+# MODULE 6 — 存檔
 # =============================================================================
 def calculate_stats(history):
     closed = [t for t in history if '✅' in t['status'] or '❌' in t['status']]
@@ -484,10 +489,10 @@ if DISCORD_SUMMARY_WEBHOOK:
     
     floating_str = f"+${floating_pnl:.2f}" if floating_pnl >= 0 else f"-${abs(floating_pnl):.2f}"
     floating_color = 65280 if floating_pnl >= 0 else 16711680 # 綠色或紅色
-    
+
     payload = {
         "embeds": [{
-            "title": f"📊 系統戰績結算摘要  ({today_str})", 
+            "title": f"📊 UAT 每日組合報告 ({today_str})",
             "description": f"**今日結案動態:**\n{details_text}",
             "color": floating_color,
             "fields": [
@@ -495,7 +500,7 @@ if DISCORD_SUMMARY_WEBHOOK:
                 {"name": "🌊 總浮動盈虧", "value": f"**{floating_str}**", "inline": True},
                 {"name": "📈 歷史總勝率", "value": f"{win_rate}% ({wins}/{total_closed})", "inline": False}
             ],
-            "footer": {"text": f"今日新增結案: {len(closed_this_run)} 筆| 每單本金 $10,000 USD"}
+            "footer": {"text": f"每單本金 $10,000 USD | 時光機模式"}
         }]
     }
     try: requests.post(DISCORD_SUMMARY_WEBHOOK, json=payload)
@@ -503,6 +508,7 @@ if DISCORD_SUMMARY_WEBHOOK:
 
 with open(HISTORY_FILE, "w", encoding="utf-8") as f:
     json.dump(trade_history[-150:], f, indent=4) # 放寬到保留 150 筆
+
 # =============================================================================
 # MODULE 7 — 整合式 Dashboard 生成 (加入持倉與浮盈)
 # =============================================================================
