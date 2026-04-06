@@ -62,7 +62,7 @@ trade_history = load_history()
 # =============================================================================
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
-LOOKBACK_YEARS = 3
+LOOKBACK_YEARS = 5
 PQR_SWING_MIN = 10
 raw_days = os.environ.get("UAT_DAYS_AGO", "10")
 SIMULATE_DAYS_AGO = int(raw_days)
@@ -193,7 +193,7 @@ def build_dynamic_watchlist():
         
         found_nk = list(dict.fromkeys(found_nk)) # 去重
         
-        if found_nk:
+        if len(found_nk) > 0:
             add_to_map(found_nk, "NK225")
             print(f"  ✅ 成功從 Wikipedia 載入 NK225 (共 {len(found_nk)} 隻)")
         else:
@@ -398,13 +398,13 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
 # 循環完咗之後 Print 報告
 print(f"\n📊 --- UAT 策略漏斗報告 ({today_str}) ---")
 print(f"總掃描數: {funnel['total']}")
+print(f"❌ 數據不足/報錯: {funnel['data_nan']}")
 print(f"❌ 成交量不足: {funnel['liq_fail']}")
-print(f"❌ 大盤走勢差: {funnel['market_fail']} (卡死主因!)")
+print(f"❌ 大盤走勢差: {funnel['market_fail']}")
 print(f"❌ RS 排名不足: {funnel['rs_fail']}")
 print(f"❌ 形態未收縮: {funnel['vcp_fail']}")
 print(f"✅ 符合條件: {funnel['ok']}")
 print("------------------------------------------\n")
-
 
 # =============================================================================
 # MODULE 6 — 存檔
