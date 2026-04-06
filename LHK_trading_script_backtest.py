@@ -54,8 +54,8 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
         if res.status_code == 429:
             print(f"⚠️ Discord 拒絕接收 (429 Rate Limit) - 傳送太快！")
         
-        # 👇 核心：強制定程式停 1 秒，防止被 Discord Ban
-        time.sleep(1) 
+        # 👇 核心：強制定程式停 0.5 秒，防止被 Discord Ban
+        time.sleep(0.5) 
         
     except Exception as e: 
         print(f"⚠️ Discord 連線錯誤: {e}")
@@ -73,7 +73,7 @@ trade_history = load_history()
 # 核心策略參數 (Hyperparameters)
 # =============================================================================
 LOOKBACK_YEARS = 5
-PQR_SWING_MIN = 50
+PQR_SWING_MIN = 75
 raw_days = os.environ.get("UAT_DAYS_AGO", "10")
 SIMULATE_DAYS_AGO = int(raw_days)
 
@@ -467,44 +467,52 @@ def calculate_stats(history):
 total_closed, wins, win_rate = calculate_stats(trade_history)
 
 # 如果今日有單結案，發送戰績結算卡片到 Discord
-if DISCORD_SUMMARY_WEBHOOK and closed_this_run:
-    # 建立今日結案明細字串
+if DISCORD_SUMMARY_WEBHOOK:
+    # 1. 整理今日結案 (如果有)
     detail_lines = []
-    for t in closed_this_run:
-        icon = "🎯" if "TAKE PROFIT" in t['status'] else "🛑"
-        # 計算盈虧金額 (USD 基準)
-        shares = 10000 / t['px']
-        pnl = shares * (t['last_px'] - t['px'])
-        pnl_str = f"+${pnl:.2f}" if pnl >= 0 else f"-${abs(pnl):.2f}"
-        detail_lines.append(f"{icon} **{t['tk']}**: {t['status']} ({pnl_str})")
+    if closed_this_run:
+        for t in closed_this_run:
+            icon = "🎯" if "TAKE PROFIT" in t['status'] else "🛑"
+            shares = 10000 / t['px']
+            pnl = shares * (t['last_px'] - t['px'])
+            pnl_str = f"+${pnl:.2f}" if pnl >= 0 else f"-${abs(pnl):.2f}"
+            detail_lines.append(f"{icon} **{t['tk']}**: {t['status']} ({pnl_str})")
     
-    details_text = "\n".join(detail_lines)
+    details_text = "\n".join(detail_lines) if detail_lines else "今日無新結案交易。"
+
+    # 2. 計算目前持倉浮動盈虧 (Floating P&L)
+    open_trades = [t for t in trade_history if t.get('status') == 'OPEN']
+    floating_pnl = 0
+    for t in open_trades:
+        shares = 10000 / t['px']
+        floating_pnl += shares * (t['last_px'] - t['px'])
+    
+    floating_str = f"+${floating_pnl:.2f}" if floating_pnl >= 0 else f"-${abs(floating_pnl):.2f}"
+    floating_color = 65280 if floating_pnl >= 0 else 16711680 # 綠色或紅色
 
     payload = {
         "embeds": [{
-            "title": "📊 系統戰績結算摘要",
-            "description": f"**今日結案清單:**\n{details_text}",
-            "color": 10181046,
+            "title": f"📊 UAT 每日組合報告 ({today_str})",
+            "description": f"**今日結案動態:**\n{details_text}",
+            "color": floating_color,
             "fields": [
-                {"name": "總結案筆數", "value": f"{total_closed}", "inline": True},
-                {"name": "獲利筆數", "value": f"{wins}", "inline": True},
-                {"name": "歷史勝率", "value": f"**{win_rate}%**", "inline": True}
+                {"name": "📂 目前持倉數", "value": f"{len(open_trades)} 隻", "inline": True},
+                {"name": "🌊 總浮動盈虧", "value": f"**{floating_str}**", "inline": True},
+                {"name": "📈 歷史總勝率", "value": f"{win_rate}% ({wins}/{total_closed})", "inline": False}
             ],
-            "footer": {"text": f"模擬日期: {today_str} | 每單本金 $10,000 USD"}
+            "footer": {"text": f"每單本金 $10,000 USD | 時光機模式"}
         }]
     }
     try: requests.post(DISCORD_SUMMARY_WEBHOOK, json=payload)
     except: pass
 
-# 確保 JSON 檔案只保留最近 100 筆，避免網頁載入過慢
-# 這能確保 JSON 檔案體積精簡，加快 GitHub Pages 的加載速度，同時保留足夠的樣本計算勝率。
 with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-    json.dump(trade_history[-100:], f, indent=4)
+    json.dump(trade_history[-150:], f, indent=4) # 放寬到保留 150 筆
 
 # =============================================================================
-# MODULE 7 — 整合式 Dashboard 生成 (緊湊版 + 多幣種)
+# MODULE 7 — 整合式 Dashboard 生成 (加入持倉與浮盈)
 # =============================================================================
-print("⏳ [7/7] 正在生成緊湊型雙策略儀表板...")
+print("⏳ [7/7] 正在生成完整型雙策略儀表板...")
 
 def get_unit(tk): return "¥" if tk.endswith(".T") else "$"
 
@@ -522,7 +530,7 @@ html = f"""<!DOCTYPE html>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto mb-10">
         <div class="space-y-3">
-            <h2 class="text-xl font-black text-indigo-400 border-b border-indigo-500/30 pb-1 flex items-center gap-2">🏆 波段推介</h2>
+            <h2 class="text-xl font-black text-indigo-400 border-b border-indigo-500/30 pb-1 flex items-center gap-2">🏆 波段推介 (今日)</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {"".join([f'''
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 hover:border-indigo-500/50 transition shadow-md">
@@ -536,12 +544,12 @@ html = f"""<!DOCTYPE html>
                     </div>
                     <div class="text-center font-bold text-lg text-white bg-white/5 py-1 rounded-lg border border-white/5">{get_unit(d['tk'])}{d['px']}</div>
                 </div>
-                ''' for d in swing_results]) if swing_results else '<p class="text-slate-600 italic text-xs">無訊號</p>'}
+                ''' for d in swing_results]) if swing_results else '<p class="text-slate-600 italic text-xs">今日無訊號</p>'}
             </div>
         </div>
 
         <div class="space-y-3">
-            <h2 class="text-xl font-black text-amber-400 border-b border-amber-500/30 pb-1 flex items-center gap-2">⚡ 短線推介</h2>
+            <h2 class="text-xl font-black text-amber-400 border-b border-amber-500/30 pb-1 flex items-center gap-2">⚡ 短線推介 (今日)</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {"".join([f'''
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 hover:border-amber-500/50 transition shadow-md">
@@ -555,10 +563,34 @@ html = f"""<!DOCTYPE html>
                     </div>
                     <div class="text-center font-bold text-lg text-white bg-white/5 py-1 rounded-lg border border-white/5">{get_unit(d['tk'])}{d['px']}</div>
                 </div>
-                ''' for d in short_term_results]) if short_term_results else '<p class="text-slate-600 italic text-xs">無訊號</p>'}
+                ''' for d in short_term_results]) if short_term_results else '<p class="text-slate-600 italic text-xs">今日無訊號</p>'}
             </div>
         </div>
     </div>
+
+    <section class="max-w-7xl mx-auto mb-10">
+        <h2 class="text-xl font-black text-cyan-400 border-b border-cyan-500/30 pb-1 mb-4 flex justify-between items-end">
+            <span>📂 目前持倉與浮動盈虧 (Open Positions)</span>
+            <span id="total-floating-header" class="text-sm">總浮盈: 載入中...</span>
+        </h2>
+        <div class="overflow-x-auto bg-slate-900/80 rounded-2xl border border-slate-800 shadow-xl">
+            <table class="w-full text-sm text-left">
+                <thead class="text-slate-500 uppercase text-[10px] border-b border-slate-800 bg-black/40">
+                    <tr>
+                        <th class="p-3">買入日期</th>
+                        <th class="p-3">代號</th>
+                        <th class="p-3">策略</th>
+                        <th class="p-3">買入價</th>
+                        <th class="p-3">現價</th>
+                        <th class="p-3">進度 (現價至目標)</th>
+                        <th class="p-3 text-right">浮動 P&L (USD)</th>
+                    </tr>
+                </thead>
+                <tbody id="open-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </section>
 
     <section class="max-w-7xl mx-auto mb-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -572,7 +604,7 @@ html = f"""<!DOCTYPE html>
                 </table>
             </div>
             <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 shadow-xl">
-                <h3 class="text-sm font-black text-emerald-400 mb-3 flex items-center gap-2">📜 最近結案紀錄</h3>
+                <h3 class="text-sm font-black text-emerald-400 mb-3 flex items-center gap-2">📜 最近已平倉紀錄</h3>
                 <table class="w-full text-xs text-left">
                     <thead class="text-slate-500 uppercase text-[9px] border-b border-slate-800">
                         <tr><th class="pb-2">日期</th><th class="pb-2">代號</th><th class="pb-2">狀態</th><th class="pb-2 text-right">P&L</th></tr>
@@ -583,32 +615,93 @@ html = f"""<!DOCTYPE html>
         </div>
     </section>
 
+    <footer class="mt-20 pb-10 text-center text-slate-600 text-[10px] uppercase tracking-widest">
+        Quant System V1 | 浮盈追蹤版 | 僅供學術研究使用
+    </footer>
+
     <script>
     fetch('uat_trade_history.json')
       .then(res => res.json())
       .then(data => {{
+        const openBody = document.getElementById('open-table-body');
         const histBody = document.getElementById('history-table-body');
         const sumBody = document.getElementById('summary-table-body');
+        const totalFloatingHeader = document.getElementById('total-floating-header');
+        
         const sorted = [...data].reverse();
 
-        // 歷史表 (顯示最近 8 筆)
-        sorted.slice(0, 8).forEach(t => {{
-            if (!t.status.includes('OPEN')) {{
+        // 1. 處理「目前持倉」表格
+        const openTrades = sorted.filter(t => t.status === 'OPEN');
+        let totalFloating = 0;
+        
+        if (openTrades.length === 0) {{
+            openBody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500">目前空倉 (No Open Positions)</td></tr>';
+            totalFloatingHeader.innerHTML = '總浮盈: <span class="text-slate-500">$0.00</span>';
+        }} else {{
+            openTrades.forEach(t => {{
+                // P&L 運算
                 const shares = 10000 / t.px;
                 const pnl = shares * (t.last_px - t.px);
+                totalFloating += pnl;
+                
+                const isJp = t.tk.endsWith('.T');
+                const tvSymbol = isJp ? 'TSE:' + t.tk.replace('.T', '') : t.tk;
+                const tvUrl = `https://www.tradingview.com/chart/?symbol=${{tvSymbol}}`;
+                
                 const pnlColor = pnl >= 0 ? 'text-emerald-400' : 'text-red-400';
-                histBody.innerHTML += `
-                <tr class="border-b border-white/5">
-                    <td class="py-2 text-[10px] text-slate-500">${{t.date.slice(5)}}</td>
-                    <td class="py-2 font-bold text-white">${{t.tk}}</td>
-                    <td class="py-2 text-[9px]">${{t.status.split(' ')[1]}}</td>
-                    <td class="py-2 text-right font-mono ${{pnlColor}}">${{pnl >=0 ? '+':''}}${{pnl.toFixed(0)}}</td>
+                const sign = pnl >= 0 ? '+$' : '-$';
+                
+                // 計算進度條 (現價在 SL 到 TP 之間的百分比)
+                let progress = 50;
+                if(t.sl && t.tp) {{
+                    const totalRange = t.tp - t.sl;
+                    const currentPos = t.last_px - t.sl;
+                    progress = Math.max(0, Math.min(100, (currentPos / totalRange) * 100));
+                }}
+                let barColor = pnl >= 0 ? 'bg-emerald-500' : 'bg-red-500';
+
+                openBody.innerHTML += `
+                <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition">
+                    <td class="p-3 text-[10px] text-slate-400">${{t.date}}</td>
+                    <td class="p-3 font-bold text-white">
+                        <a href="${{tvUrl}}" target="_blank" class="hover:text-cyan-400 hover:underline flex items-center gap-1">${{t.tk}} <span class="text-[9px]">📈</span></a>
+                    </td>
+                    <td class="p-3"><span class="text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">${{t.type || 'N/A'}}</span></td>
+                    <td class="p-3 text-slate-300">${{isJp?'¥':'$'}}${{t.px}}</td>
+                    <td class="p-3 font-bold text-white">${{isJp?'¥':'$'}}${{t.last_px}}</td>
+                    <td class="p-3">
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 mt-1">
+                          <div class="${{barColor}} h-1.5 rounded-full" style="width: ${{progress}}%"></div>
+                        </div>
+                    </td>
+                    <td class="p-3 text-right font-mono font-bold ${{pnlColor}}">${{sign}}${{Math.abs(pnl).toFixed(2)}}</td>
                 </tr>`;
-            }}
+            }});
+            
+            // 更新 Header 總浮盈
+            const totSign = totalFloating >= 0 ? '+$' : '-$';
+            const totColor = totalFloating >= 0 ? 'text-emerald-400' : 'text-red-400';
+            totalFloatingHeader.innerHTML = `總浮盈: <span class="font-black ${{totColor}}">${{totSign}}${{Math.abs(totalFloating).toFixed(2)}}</span>`;
+        }}
+
+        // 2. 處理「歷史平倉」表格 (只顯示已平倉的)
+        const closed = sorted.filter(t => t.status !== 'OPEN');
+        closed.slice(0, 8).forEach(t => {{
+            const shares = 10000 / t.px;
+            const pnl = shares * (t.last_px - t.px);
+            const pnlColor = pnl >= 0 ? 'text-emerald-400' : 'text-red-400';
+            const isWin = t.status.includes('✅');
+            
+            histBody.innerHTML += `
+            <tr class="border-b border-white/5">
+                <td class="py-2 text-[10px] text-slate-500">${{t.close_date || t.date}}</td>
+                <td class="py-2 font-bold text-white">${{t.tk}}</td>
+                <td class="py-2 text-[10px]">${{isWin ? '🎯 止盈' : '🛑 止損'}}</td>
+                <td class="py-2 text-right font-mono ${{pnlColor}}">${{pnl >=0 ? '+':''}}${{pnl.toFixed(0)}}</td>
+            </tr>`;
         }});
 
-        // 結算表
-        const closed = sorted.filter(t => !t.status.includes('OPEN'));
+        // 3. 處理結算表
         [10, 20, 50, 100].forEach(n => {{
             const slice = closed.slice(0, n);
             if(slice.length > 0) {{
@@ -626,7 +719,8 @@ html = f"""<!DOCTYPE html>
                 </tr>`;
             }}
         }});
-      }});
+      }})
+      .catch(e => console.log('讀取 JSON 發生錯誤:', e));
     </script>
 </body>
 </html>"""
