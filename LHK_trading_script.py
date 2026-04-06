@@ -40,15 +40,15 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
     color = 65280 if is_bullish else 16711680 
     
     embed_data = {
-        "title": f"🚨 [UAT 模擬] 系統異動觸發: {ticker}",
+        "title": f"🚨 系統異動觸發: {ticker}",
         "description": f"**{strategy_name}** 條件已達成！\n🔍 來源: `{source_str}`",
         "color": color,
         "fields": [
-            {"name": "💵 模擬當時價格", "value": f"${price}", "inline": True},
-            {"name": "🛑 建議止損", "value": f"${sl}", "inline": True},
-            {"name": "🎯 建議止盈", "value": f"${tp}", "inline": True}
+            {"name": "💵 當前現價", "value": f"${price}", "inline": True},
+            {"name": "🛑 嚴格止損", "value": f"${sl}", "inline": True},
+            {"name": "🎯 目標止盈", "value": f"${tp}", "inline": True}
         ],
-        "footer": {"text": f"時光機模式執行中 | 模擬日期: {today_str}"}
+        "footer": {"text": "V1 Quant Master 實時監控系統"}
     }
     try: 
         res = requests.post(DISCORD_WEBHOOK_URL, json={"embeds": [embed_data]})
@@ -91,8 +91,12 @@ def build_dynamic_watchlist():
     def add_to_map(tickers, source_label):
         for t in tickers:
             if not isinstance(t, str) or len(t) < 1: continue
-            # 統一轉換 Ticker 格式 (例如將 . 轉為 -)
-            clean_t = t.strip().replace('.', '-')
+            
+            # 【修正】只針對沒有 .T 的美股處理點號
+            clean_t = t.strip()
+            if not clean_t.endswith('.T'):
+                clean_t = clean_t.replace('.', '-')
+                
             if clean_t not in ticker_sources:
                 ticker_sources[clean_t] = []
             if source_label not in ticker_sources[clean_t]:
@@ -193,35 +197,42 @@ def build_dynamic_watchlist():
     try:
         n225_url = 'https://en.wikipedia.org/wiki/Nikkei_225'
         res = requests.get(n225_url, headers=headers, timeout=10)
-        # 抓取所有表格
         all_tables = pd.read_html(res.text)
+        n225_table = max(all_tables, key=len) # 取行數最多的表格
         
-        found_nk = []
         import re
-        # 遍歷所有表格，尋找包含 4 位數字代號的表
-        for table in all_tables:
-            # 嘗試尋找符合日股代號格式的單元格
-            all_cells = table.astype(str).values.flatten()
-            codes = [f"{m}.T" for m in all_cells if re.match(r'^\d{4}$', m)]
-            found_nk.extend(codes)
+        found_nk = []
+        target_col = None
         
-        # 去重
-        found_nk = list(dict.fromkeys(found_nk))
-        
-        if found_nk:
-            add_to_map(found_nk, "NK225")
-            print(f"  ✅ 成功從 Wikipedia 載入 NK225 (共 {len(found_nk)} 隻)")
-        else:
-            raise ValueError("找不到符合格式的日股表格")
+        # 優先方法：搵明確嘅標題 (Wikipedia 通常叫 'Code' 或 'Ticker')
+        for col in n225_table.columns:
+            col_name = str(col).lower()
+            if 'code' in col_name or 'ticker' in col_name or 'symbol' in col_name:
+                target_col = col
+                break
+                
+        # 後備方法：如果標題改咗名，用「數值特徵」去估
+        if target_col is None:
+            for col in n225_table.columns:
+                # 攞頭 5 個有效數值測試
+                sample_vals = n225_table[col].dropna().astype(str).tolist()[:5]
+                # 如果全部都係 4 位數...
+                if sample_vals and all(re.match(r'^\d{4}$', str(x)) for x in sample_vals):
+                    # 並且有數字大於 3000 (證明肯定唔係年份)
+                    if any(int(x) > 3000 for x in sample_vals if str(x).isdigit()):
+                        target_col = col
+                        break
 
-        # B. 捕捉 JP Trending (保持不變)
-        jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
-        res_jp = requests.get(jp_trending_url, headers=headers)
-        if res_jp.status_code == 200:
-            jp_trending = [q['symbol'] for q in res_jp.json()['finance']['result'][0]['quotes']]
-            add_to_map(jp_trending, "JP熱門")
-            print(f"  🔥 捕捉到日股當日焦點: {len(jp_trending)} 隻")
-        print(f"  ✅ 成功構建日股動態池")
+        # 如果成功定位到正確欄位，就開始提取
+        if target_col is not None:
+            found_nk = [f"{str(x)}.T" for x in n225_table[target_col] if re.match(r'^\d{4}$', str(x))]
+            found_nk = list(dict.fromkeys(found_nk)) # 去重
+            
+        if len(found_nk) > 0:
+            add_to_map(found_nk, "NK225")
+            print(f"  ✅ 成功從 Wikipedia 精確載入 NK225 (共 {len(found_nk)} 隻)")
+        else:
+            raise ValueError("找不到股票代號欄位 (可能被誤認為年份)")
     except Exception as e:
         print(f"  ⚠️ 日股名單載入失敗: {e}")
         # 如果 fail, 手動加入2026/04/05 list
@@ -252,6 +263,18 @@ def build_dynamic_watchlist():
         ]
         # 執行合併
         add_to_map(nk225_tickers, "NK225")
+
+    # B. 捕捉 JP Trending (保持不變)
+    try:
+        jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
+        res_jp = requests.get(jp_trending_url, headers=headers, timeout=5)
+        # 加入 len 檢查，防止 list index out of range
+        if res_jp.status_code == 200 and len(res_jp.json().get('finance', {}).get('result', [])) > 0:
+            jp_trending = [q['symbol'] for q in res_jp.json()['finance']['result'][0]['quotes']]
+            add_to_map(jp_trending, "JP熱門")
+            print(f"  🔥 捕捉到日股當日焦點: {len(jp_trending)} 隻")
+    except Exception as e:
+        print(f"  ⚠️ JP Trending 略過: API 未返回數據")
 
     add_to_map(['SPY', '^VIX', '^N225'], "基準指數")
     return ticker_sources
@@ -299,71 +322,86 @@ for trade in trade_history:
                 closed_this_run.append(trade)
 
 # =============================================================================
-# MODULE 4 & 5 — 雙策略判定引擎
+# MODULE 4 & 5 — 雙策略判定引擎 (優化架構版)
 # =============================================================================
 print(f"⏳ [4-6/7] 正在按 {today_str} 視角進行策略演算...")
 
 swing_results = []
 short_term_results = []
-
-funnel = {"total": 0, "liq_fail": 0, "market_fail": 0, "rs_fail": 0, "vcp_fail": 0, "ok": 0}
+funnel = {"total": 0, "data_nan": 0, "liq_fail": 0, "market_fail": 0, "rs_fail": 0, "vcp_fail": 0, "ok": 0}
 
 for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
+    funnel["total"] += 1
     try:
-        funnel["total"] += 1
-        c = closes[ticker]; h = highs[ticker]; l = lows[ticker]; v = vols[ticker]; op = opens[ticker]
-        if len(c.dropna()) < 200: continue
-        
-        avg_dollar_vol = (c.tail(20) * v.tail(20)).mean()
-        min_liq = 300_000_000 if ticker.endswith('.T') else 5_000_000
-        
-        if avg_dollar_vol < min_liq: 
-            funnel["liq_fail"] += 1
+        # --- 第一層：數據完整性 ---
+        c_raw = closes[ticker].dropna()
+        if len(c_raw) < 252 + 200: # 確保足夠計 RS 同 SMA200
+            funnel["data_nan"] += 1
             continue
         
-        is_jp = ticker.endswith('.T')
-        sma20 = c.rolling(20).mean(); sma50 = c.rolling(50).mean(); sma200 = c.rolling(200).mean()
-        atr = (h-l).rolling(14).mean(); cp = float(c.iloc[-1]); catr = float(atr.iloc[-1])
-        rs = rs_rank[ticker].iloc[-1]
+        # 定義基礎數據
+        c = closes[ticker]; h = highs[ticker]; l = lows[ticker]; v = vols[ticker]; op = opens[ticker]
+        cp = float(c.iloc[-1])
         
-        if rs < PQR_SWING_MIN:
+        # --- 第二層：流動性過濾 ---
+        avg_dollar_vol = (c.tail(20) * v.tail(20)).mean()
+        min_liq = 300_000_000 if ticker.endswith('.T') else 5_000_000
+        if avg_dollar_vol < min_liq:
+            funnel["liq_fail"] += 1
+            continue
+            
+        # --- 第三層：大盤趨勢 (is_bull) ---
+        is_jp = ticker.endswith('.T')
+        bench_c = n225_c.iloc[-1] if is_jp else spy_c.iloc[-1]
+        bench_200 = n225_200.iloc[-1] if is_jp else spy_200.iloc[-1]
+        is_bull = bench_c > bench_200
+        
+        if not is_bull:
+            funnel["market_fail"] += 1
+            # 注意：如果大盤唔好，Swing 可能唔行，但 Short Term (超賣) 可能想行
+            # 呢度假設你兩個策略都要大盤好先做，所以 continue
+            continue
+
+        # --- 第四層：相對強度 (RS) ---
+        rs = rs_rank[ticker].iloc[-1]
+        if pd.isna(rs) or rs < PQR_SWING_MIN:
             funnel["rs_fail"] += 1
             continue
 
+        # --- 第五層：計算技術指標 (只針對過咗上面幾關嘅股票) ---
+        sma20 = c.rolling(20).mean()
+        std20 = c.rolling(20).std()
+        bb_lower = sma20 - (2 * std20)
+        bb_width = (4 * std20) / sma20
+        atr = (h-l).rolling(14).mean(); catr = float(atr.iloc[-1])
         
-        std20 = c.rolling(20).std(); bb_lower = sma20 - (2 * std20); bb_width = (4 * std20) / sma20
-        delta = c.diff(); gain = (delta.where(delta > 0, 0)).rolling(14).mean(); loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+        # RSI
+        delta = c.diff()
+        gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
         rsi = 100 - (100 / (1 + gain/loss))
         
-        bench_200 = n225_200.iloc[-1] if is_jp else spy_200.iloc[-1]
-        bench_c = n225_c.iloc[-1] if is_jp else spy_c.iloc[-1]
-        is_bull = bench_c > bench_200
-        
-        if not (bench_c > bench_200): 
-            funnel["market_fail"] += 1
-            continue
-
         sources = TICKER_MAP.get(ticker, ["動態掃描"])
+        triggered = False
 
-        # 策略 A: Swing
+        # ---------------------------------------------------------------------
+        # 策略 A: Swing (VCP / BB Sqz)
+        # ---------------------------------------------------------------------
         base_dd = (c.rolling(60).max() - c.rolling(60).min()) / c.rolling(60).max()
         rec_volat = (c.rolling(10).max() - c.rolling(10).min()) / c.rolling(10).max()
-        is_vcp = (base_dd <= 0.35) and (rec_volat <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
+        is_vcp = (base_dd.iloc[-1] <= 0.35) and (rec_volat.iloc[-1] <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
         is_bb_sqz = (bb_width.iloc[-1] <= bb_width.rolling(120).min().iloc[-1] * 1.1)
 
-        if not is_vcp and not is_bb_sqz:
-            funnel["vcp_fail"] += 1
-            continue
-
-        if is_bull and rs >= PQR_SWING_MIN and (is_vcp or is_bb_sqz):
+        if is_vcp or is_bb_sqz:
             tag_name = "🏆 VCP 突破" if is_vcp else "💥 BB 擠壓"
             sl_p = round(cp - 2.5 * catr, 2); tp_p = round(cp + 4.5 * catr, 2)
             swing_results.append({'tk': ticker, 'pqr': round(rs, 0), 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'tag': tag_name, 'type': 'SWING', 'sources': sources})
             send_discord_alert(ticker, tag_name, round(cp, 2), sl_p, tp_p, True, sources)
-            if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
-                trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SWING'})
+            triggered = True
 
-        # 策略 B: Short
+        # ---------------------------------------------------------------------
+        # 策略 B: Short Term (Gap / Oversold)
+        # ---------------------------------------------------------------------
         gap_pct = (op.iloc[-1] - c.iloc[-2]) / c.iloc[-2]
         is_gap_up = (gap_pct >= 0.03) and (v.iloc[-1] > v.rolling(20).mean().iloc[-1] * 2)
         is_oversold = (rsi.iloc[-1] < 28) and (cp < bb_lower.iloc[-1])
@@ -373,15 +411,26 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
             sl_price = round(cp * 0.95, 2); tp_price = round(cp * 1.05, 2)
             short_term_results.append({'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'tag': strategy_tag, 'type': 'SHORT', 'sources': sources})
             send_discord_alert(ticker, strategy_tag, round(cp, 2), sl_price, tp_price, True, sources)
+            triggered = True
+
+        # 寫入歷史庫 (如果有任何一個策略觸發)
+        if triggered:
+            funnel["ok"] += 1
             if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
-                trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SHORT'})
-    except: pass
+                 # 這裡可以根據具體策略紀錄，範例先記 Swing 的 price
+                 trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'status': 'OPEN'})
+        else:
+            funnel["vcp_fail"] += 1
+
+    except Exception as e:
+        funnel["data_nan"] += 1
 
 # 循環完咗之後 Print 報告
 print(f"\n📊 --- UAT 策略漏斗報告 ({today_str}) ---")
 print(f"總掃描數: {funnel['total']}")
+print(f"❌ 數據不足/報錯: {funnel['data_nan']}")
 print(f"❌ 成交量不足: {funnel['liq_fail']}")
-print(f"❌ 大盤走勢差: {funnel['market_fail']} (卡死主因!)")
+print(f"❌ 大盤走勢差: {funnel['market_fail']}")
 print(f"❌ RS 排名不足: {funnel['rs_fail']}")
 print(f"❌ 形態未收縮: {funnel['vcp_fail']}")
 print(f"✅ 符合條件: {funnel['ok']}")
