@@ -193,20 +193,11 @@ def build_dynamic_watchlist():
         
         found_nk = list(dict.fromkeys(found_nk)) # 去重
         
-        if len(found_nk) > 0:
+        if found_nk:
             add_to_map(found_nk, "NK225")
             print(f"  ✅ 成功從 Wikipedia 載入 NK225 (共 {len(found_nk)} 隻)")
         else:
             raise ValueError("找不到符合格式的日股表格")
-
-        # B. 捕捉 JP Trending (保持不變)
-        jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
-        res_jp = requests.get(jp_trending_url, headers=headers)
-        if res_jp.status_code == 200:
-            jp_trending = [q['symbol'] for q in res_jp.json()['finance']['result'][0]['quotes']]
-            add_to_map(jp_trending, "JP熱門")
-            print(f"  🔥 捕捉到日股當日焦點: {len(jp_trending)} 隻")
-        print(f"  ✅ 成功構建日股動態池")
     except Exception as e:
         print(f"  ⚠️ 日股名單載入失敗: {e}")
         # 如果 fail, 手動加入2026/04/05 list
@@ -237,6 +228,18 @@ def build_dynamic_watchlist():
         ]
         # 執行合併
         add_to_map(nk225_tickers, "NK225")
+
+    # B. 捕捉 JP Trending (保持不變)
+    try:
+        jp_trending_url = "https://query1.finance.yahoo.com/v1/finance/trending/JP?count=20"
+        res_jp = requests.get(jp_trending_url, headers=headers, timeout=5)
+        # 加入 len 檢查，防止 list index out of range
+        if res_jp.status_code == 200 and len(res_jp.json().get('finance', {}).get('result', [])) > 0:
+            jp_trending = [q['symbol'] for q in res_jp.json()['finance']['result'][0]['quotes']]
+            add_to_map(jp_trending, "JP熱門")
+            print(f"  🔥 捕捉到日股當日焦點: {len(jp_trending)} 隻")
+    except Exception as e:
+        print(f"  ⚠️ JP Trending 略過: API 未返回數據")
 
     add_to_map(['SPY', '^VIX', '^N225'], "基準指數")
     return ticker_sources
@@ -359,7 +362,7 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
         # ---------------------------------------------------------------------
         base_dd = (c.rolling(60).max() - c.rolling(60).min()) / c.rolling(60).max()
         rec_volat = (c.rolling(10).max() - c.rolling(10).min()) / c.rolling(10).max()
-        is_vcp = (base_dd <= 0.35) and (rec_volat <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
+        is_vcp = (base_dd.iloc[-1] <= 0.35) and (rec_volat.iloc[-1] <= 0.12) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
         is_bb_sqz = (bb_width.iloc[-1] <= bb_width.rolling(120).min().iloc[-1] * 1.1)
 
         if is_vcp or is_bb_sqz:
