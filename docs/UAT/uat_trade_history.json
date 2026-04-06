@@ -1,1 +1,602 @@
-[]
+[
+    {
+        "date": "2025-06-26",
+        "tk": "MET",
+        "px": 78.22,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "D",
+        "px": 53.38,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "KMB",
+        "px": 122.58,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "MSI",
+        "px": 411.87,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "HCA",
+        "px": 375.87,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "F",
+        "px": 10.26,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "GPN",
+        "px": 77.52,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "FIS",
+        "px": 78.38,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "PAYX",
+        "px": 137.18,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "KDP",
+        "px": 31.97,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "SYY",
+        "px": 72.45,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CTSH",
+        "px": 76.52,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CARR",
+        "px": 71.79,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "IDXX",
+        "px": 527.78,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "VRSK",
+        "px": 303.21,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DLR",
+        "px": 165.93,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "A",
+        "px": 118.45,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ED",
+        "px": 96.04,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "NEM",
+        "px": 58.7,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CHTR",
+        "px": 394.01,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "TFC",
+        "px": 41.13,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "COF",
+        "px": 208.35,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "SYF",
+        "px": 65.01,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "RF",
+        "px": 22.67,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "MTB",
+        "px": 189.22,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "IVZ",
+        "px": 15.17,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "BEN",
+        "px": 22.21,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "TROW",
+        "px": 92.5,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "GL",
+        "px": 122.0,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "AIZ",
+        "px": 193.94,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "HST",
+        "px": 14.88,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "VTR",
+        "px": 61.64,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "UDR",
+        "px": 39.44,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ESS",
+        "px": 276.62,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "VICI",
+        "px": 30.74,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "SBAC",
+        "px": 226.75,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "AWK",
+        "px": 135.83,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "PNW",
+        "px": 86.34,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ATO",
+        "px": 150.42,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "LNT",
+        "px": 58.92,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ES",
+        "px": 61.2,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CMS",
+        "px": 67.63,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "XEL",
+        "px": 66.22,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ETR",
+        "px": 80.25,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "FE",
+        "px": 38.77,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "PEG",
+        "px": 81.07,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DTE",
+        "px": 128.33,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "PPL",
+        "px": 32.85,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DUK",
+        "px": 113.3,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CNP",
+        "px": 35.97,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "VST",
+        "px": 189.67,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "NWS",
+        "px": 33.73,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "FOXA",
+        "px": 56.14,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "FOX",
+        "px": 51.67,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "LYV",
+        "px": 147.2,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "MTCH",
+        "px": 29.9,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "EA",
+        "px": 157.26,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "TTWO",
+        "px": 239.33,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "TMUS",
+        "px": 228.37,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "LUMN",
+        "px": 4.35,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "AMX",
+        "px": 17.28,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "HLT",
+        "px": 257.08,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DHI",
+        "px": 126.07,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "LEN",
+        "px": 108.39,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "PHM",
+        "px": 103.83,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "GRMN",
+        "px": 202.73,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "GM",
+        "px": 48.82,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "BBY",
+        "px": 65.68,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "HAS",
+        "px": 70.53,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "MAT",
+        "px": 19.47,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "GIS",
+        "px": 48.47,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "HRL",
+        "px": 29.22,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "KR",
+        "px": 70.19,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DLTR",
+        "px": 99.44,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DG",
+        "px": 110.91,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CTRA",
+        "px": 25.31,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "OKE",
+        "px": 78.0,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "TRGP",
+        "px": 172.77,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "KMI",
+        "px": 28.0,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "FISV",
+        "px": 171.36,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "JKHY",
+        "px": 175.74,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "PRU",
+        "px": 102.62,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CINF",
+        "px": 143.35,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "NDAQ",
+        "px": 87.6,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ICE",
+        "px": 179.18,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "BMY",
+        "px": 44.43,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "STE",
+        "px": 237.31,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "WAT",
+        "px": 354.91,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "MTD",
+        "px": 1193.31,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "NOC",
+        "px": 488.18,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "TDG",
+        "px": 1377.16,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "MMM",
+        "px": 148.76,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "AME",
+        "px": 178.96,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "ROK",
+        "px": 322.65,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "DOV",
+        "px": 181.59,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "CSX",
+        "px": 32.21,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "AMH",
+        "px": 34.96,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "EQIX",
+        "px": 732.56,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "FTNT",
+        "px": 103.86,
+        "status": "OPEN"
+    },
+    {
+        "date": "2025-06-26",
+        "tk": "NTAP",
+        "px": 102.76,
+        "status": "OPEN"
+    }
+]
