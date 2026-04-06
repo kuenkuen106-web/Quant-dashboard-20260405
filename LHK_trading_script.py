@@ -36,6 +36,9 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
         print(f"⚠️ 未設定 Webhook URL，跳過發送 {ticker}") # 加呢行等你知道係咪讀唔到 URL
         return
     
+    # 👇 自動判定幣種符號
+    unit = "¥" if ticker.endswith(".T") else "$"
+
     source_str = " | ".join(sources) if sources else "動態掃描"
     color = 65280 if is_bullish else 16711680 
     
@@ -44,9 +47,9 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
         "description": f"**{strategy_name}** 條件已達成！\n🔍 來源: `{source_str}`",
         "color": color,
         "fields": [
-            {"name": "💵 當前現價", "value": f"${price}", "inline": True},
-            {"name": "🛑 嚴格止損", "value": f"${sl}", "inline": True},
-            {"name": "🎯 目標止盈", "value": f"${tp}", "inline": True}
+            {"name": "💵 當前現價", "value": f"{unit}{price}", "inline": True},
+            {"name": "🛑 嚴格止損", "value": f"{unit}{sl}", "inline": True},
+            {"name": "🎯 目標止盈", "value": f"{unit}{tp}", "inline": True}
         ],
         "footer": {"text": "V1 Quant Master 實時監控系統"}
     }
