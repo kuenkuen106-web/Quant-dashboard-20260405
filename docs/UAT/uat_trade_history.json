@@ -1,551 +1,11 @@
 [
     {
         "date": "2025-06-27",
-        "tk": "VTR",
-        "px": 61.2,
-        "sl": 58.65,
-        "tp": 65.78,
-        "last_px": 61.93,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "MAA",
-        "px": 143.09,
-        "sl": 137.84,
-        "tp": 152.53,
-        "last_px": 143.24,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "SBAC",
-        "px": 226.85,
-        "sl": 216.74,
-        "tp": 245.04,
-        "last_px": 230.82,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "CCI",
-        "px": 97.15,
-        "sl": 92.77,
-        "tp": 105.04,
-        "last_px": 99.16,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "PNW",
-        "px": 85.93,
-        "sl": 83.04,
-        "tp": 91.13,
-        "last_px": 86.82,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "ATO",
-        "px": 150.0,
-        "sl": 145.49,
-        "tp": 158.12,
-        "last_px": 151.6,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "LNT",
-        "px": 58.95,
-        "sl": 57.2,
-        "tp": 62.11,
-        "last_px": 59.07,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "WEC",
-        "px": 100.63,
-        "sl": 97.52,
-        "tp": 106.22,
-        "last_px": 101.67,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "CMS",
-        "px": 67.49,
-        "sl": 65.42,
-        "tp": 71.22,
-        "last_px": 67.75,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "AEP",
-        "px": 100.04,
-        "sl": 96.82,
-        "tp": 105.82,
-        "last_px": 101.31,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "PEG",
-        "px": 81.55,
-        "sl": 78.64,
-        "tp": 86.79,
-        "last_px": 82.19,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "DTE",
-        "px": 128.39,
-        "sl": 124.44,
-        "tp": 135.5,
-        "last_px": 129.21,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "PPL",
-        "px": 32.79,
-        "sl": 31.63,
-        "tp": 34.87,
-        "last_px": 33.11,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "DUK",
-        "px": 113.95,
-        "sl": 110.13,
-        "tp": 120.82,
-        "last_px": 115.0,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "VST",
-        "px": 194.29,
-        "sl": 178.12,
-        "tp": 223.4,
-        "last_px": 193.07,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "FOXA",
-        "px": 56.25,
-        "sl": 53.38,
-        "tp": 61.43,
-        "last_px": 55.51,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "FOX",
-        "px": 51.81,
-        "sl": 49.25,
-        "tp": 56.41,
-        "last_px": 51.1,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "EA",
-        "px": 157.27,
-        "sl": 151.12,
-        "tp": 168.35,
-        "last_px": 159.22,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "GM",
-        "px": 49.34,
-        "sl": 46.87,
-        "tp": 53.77,
-        "last_px": 48.87,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "ICE",
-        "px": 180.12,
-        "sl": 174.55,
-        "tp": 190.15,
-        "last_px": 181.83,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "WAT",
-        "px": 352.41,
-        "sl": 331.35,
-        "tp": 390.31,
-        "last_px": 349.04,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "NOC",
-        "px": 488.52,
-        "sl": 460.72,
-        "tp": 538.55,
-        "last_px": 494.43,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "AME",
-        "px": 179.67,
-        "sl": 173.03,
-        "tp": 191.62,
-        "last_px": 180.1,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "ROK",
-        "px": 326.35,
-        "sl": 313.65,
-        "tp": 349.21,
-        "last_px": 328.55,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "SAP",
-        "px": 301.09,
-        "sl": 291.27,
-        "tp": 318.77,
-        "last_px": 304.1,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "1721.T",
-        "px": 3216.43,
-        "sl": 3115.0,
-        "tp": 3399.0,
-        "last_px": 3246.58,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "1801.T",
-        "px": 8060.09,
-        "sl": 7691.98,
-        "tp": 8722.69,
-        "last_px": 8206.63,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "1802.T",
-        "px": 2112.32,
-        "sl": 2028.58,
-        "tp": 2263.04,
-        "last_px": 2123.98,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "1803.T",
-        "px": 1536.97,
-        "sl": 1471.16,
-        "tp": 1655.42,
-        "last_px": 1570.6,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "1812.T",
-        "px": 3603.83,
-        "sl": 3430.24,
-        "tp": 3916.31,
-        "last_px": 3669.16,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "2282.T",
-        "px": 4842.85,
-        "sl": 4706.89,
-        "tp": 5087.57,
-        "last_px": 4879.01,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "2413.T",
-        "px": 1992.5,
-        "sl": 1867.86,
-        "tp": 2216.86,
-        "last_px": 1985.5,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "2432.T",
-        "px": 2604.72,
-        "sl": 2439.74,
-        "tp": 2901.7,
-        "last_px": 2602.77,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "2531.T",
-        "px": 1168.2,
-        "sl": 1113.29,
-        "tp": 1267.04,
-        "last_px": 1175.07,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "2871.T",
-        "px": 1824.15,
-        "sl": 1757.47,
-        "tp": 1944.17,
-        "last_px": 1837.8,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "3402.T",
-        "px": 960.27,
-        "sl": 926.06,
-        "tp": 1021.84,
-        "last_px": 968.8,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "3863.T",
-        "px": 1014.92,
-        "sl": 968.69,
-        "tp": 1098.14,
-        "last_px": 1025.79,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "4502.T",
-        "px": 4194.55,
-        "sl": 4082.18,
-        "tp": 4396.81,
-        "last_px": 4251.23,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "4519.T",
-        "px": 7383.64,
-        "sl": 7026.67,
-        "tp": 8026.2,
-        "last_px": 7393.47,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "5101.T",
-        "px": 3842.41,
-        "sl": 3650.29,
-        "tp": 4034.53,
-        "last_px": 3916.36,
-        "status": "OPEN",
-        "type": "SHORT"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "5901.T",
-        "px": 2711.23,
-        "sl": 2622.61,
-        "tp": 2870.74,
-        "last_px": 2733.5,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "6702.T",
-        "px": 3410.6,
-        "sl": 3265.64,
-        "tp": 3671.53,
-        "last_px": 3462.81,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "7013.T",
-        "px": 2260.84,
-        "sl": 2083.62,
-        "tp": 2579.84,
-        "last_px": 2218.99,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "7832.T",
-        "px": 4974.77,
-        "sl": 4660.22,
-        "tp": 5540.96,
-        "last_px": 5082.9,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "8306.T",
-        "px": 1926.92,
-        "sl": 1858.5,
-        "tp": 2050.07,
-        "last_px": 1925.95,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "8308.T",
-        "px": 1324.9,
-        "sl": 1264.87,
-        "tp": 1432.94,
-        "last_px": 1309.17,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "8309.T",
-        "px": 3716.96,
-        "sl": 3600.71,
-        "tp": 3926.21,
-        "last_px": 3702.49,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "8411.T",
-        "px": 3872.82,
-        "sl": 3706.62,
-        "tp": 4171.97,
-        "last_px": 3891.33,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "8795.T",
-        "px": 3046.67,
-        "sl": 2918.64,
-        "tp": 3277.13,
-        "last_px": 3063.1,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "9007.T",
-        "px": 1642.41,
-        "sl": 1570.82,
-        "tp": 1771.26,
-        "last_px": 1636.58,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "9021.T",
-        "px": 3165.04,
-        "sl": 3080.46,
-        "tp": 3317.3,
-        "last_px": 3211.73,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "9064.T",
-        "px": 1890.72,
-        "sl": 1817.83,
-        "tp": 2021.91,
-        "last_px": 1886.81,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "9301.T",
-        "px": 1143.75,
-        "sl": 1100.7,
-        "tp": 1221.25,
-        "last_px": 1149.58,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
-        "tk": "9433.T",
-        "px": 2365.28,
-        "sl": 2292.5,
-        "tp": 2496.27,
-        "last_px": 2403.56,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2025-06-27",
         "tk": "9434.T",
         "px": 210.48,
         "sl": 204.21,
         "tp": 221.76,
-        "last_px": 214.52,
+        "last_px": 215.96,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -555,7 +15,7 @@
         "px": 1563.69,
         "sl": 1481.96,
         "tp": 1710.79,
-        "last_px": 1626.18,
+        "last_px": 1630.19,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -565,7 +25,7 @@
         "px": 5063.88,
         "sl": 4899.98,
         "tp": 5358.91,
-        "last_px": 5093.36,
+        "last_px": 5147.41,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -575,7 +35,7 @@
         "px": 181.25,
         "sl": 171.84,
         "tp": 198.2,
-        "last_px": 181.25,
+        "last_px": 185.52,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -585,7 +45,7 @@
         "px": 69.25,
         "sl": 67.14,
         "tp": 73.04,
-        "last_px": 69.25,
+        "last_px": 70.15,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -595,7 +55,7 @@
         "px": 134.12,
         "sl": 127.92,
         "tp": 145.28,
-        "last_px": 134.12,
+        "last_px": 134.37,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -605,7 +65,7 @@
         "px": 464.41,
         "sl": 449.74,
         "tp": 490.82,
-        "last_px": 464.41,
+        "last_px": 471.91,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -615,7 +75,7 @@
         "px": 144.33,
         "sl": 136.77,
         "tp": 157.93,
-        "last_px": 144.33,
+        "last_px": 142.52,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -625,7 +85,7 @@
         "px": 89.8,
         "sl": 84.7,
         "tp": 98.96,
-        "last_px": 89.8,
+        "last_px": 93.02,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -635,7 +95,7 @@
         "px": 108.77,
         "sl": 101.47,
         "tp": 121.9,
-        "last_px": 108.77,
+        "last_px": 109.61,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -645,7 +105,7 @@
         "px": 392.69,
         "sl": 377.83,
         "tp": 419.43,
-        "last_px": 392.69,
+        "last_px": 393.79,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -655,7 +115,7 @@
         "px": 85.19,
         "sl": 82.22,
         "tp": 90.52,
-        "last_px": 85.19,
+        "last_px": 86.73,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -665,7 +125,7 @@
         "px": 205.62,
         "sl": 195.62,
         "tp": 223.61,
-        "last_px": 205.62,
+        "last_px": 202.38,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -675,7 +135,7 @@
         "px": 107.41,
         "sl": 103.4,
         "tp": 114.63,
-        "last_px": 107.41,
+        "last_px": 104.78,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -685,7 +145,7 @@
         "px": 730.62,
         "sl": 702.1,
         "tp": 781.94,
-        "last_px": 730.62,
+        "last_px": 725.59,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -695,7 +155,7 @@
         "px": 62.64,
         "sl": 60.22,
         "tp": 66.99,
-        "last_px": 62.64,
+        "last_px": 63.54,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -705,7 +165,7 @@
         "px": 221.38,
         "sl": 213.87,
         "tp": 234.88,
-        "last_px": 221.38,
+        "last_px": 222.81,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -715,7 +175,7 @@
         "px": 356.01,
         "sl": 341.91,
         "tp": 381.4,
-        "last_px": 356.01,
+        "last_px": 356.18,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -725,7 +185,7 @@
         "px": 131.73,
         "sl": 126.35,
         "tp": 141.41,
-        "last_px": 131.73,
+        "last_px": 133.88,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -735,7 +195,7 @@
         "px": 78.67,
         "sl": 75.75,
         "tp": 83.94,
-        "last_px": 78.67,
+        "last_px": 79.33,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -745,7 +205,7 @@
         "px": 54.67,
         "sl": 52.23,
         "tp": 59.07,
-        "last_px": 54.67,
+        "last_px": 55.76,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -755,7 +215,7 @@
         "px": 37.82,
         "sl": 35.47,
         "tp": 42.04,
-        "last_px": 37.82,
+        "last_px": 38.16,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -765,7 +225,7 @@
         "px": 76.95,
         "sl": 73.84,
         "tp": 82.55,
-        "last_px": 76.95,
+        "last_px": 79.33,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -775,7 +235,7 @@
         "px": 72.39,
         "sl": 69.74,
         "tp": 77.15,
-        "last_px": 72.39,
+        "last_px": 73.48,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -785,7 +245,7 @@
         "px": 298.29,
         "sl": 285.56,
         "tp": 321.19,
-        "last_px": 298.29,
+        "last_px": 293.79,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -795,7 +255,7 @@
         "px": 57.78,
         "sl": 54.42,
         "tp": 63.83,
-        "last_px": 57.78,
+        "last_px": 58.35,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -805,7 +265,7 @@
         "px": 528.62,
         "sl": 506.68,
         "tp": 568.12,
-        "last_px": 528.62,
+        "last_px": 533.44,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -815,7 +275,7 @@
         "px": 123.24,
         "sl": 119.07,
         "tp": 130.74,
-        "last_px": 123.24,
+        "last_px": 123.84,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -825,7 +285,7 @@
         "px": 39.54,
         "sl": 38.05,
         "tp": 42.22,
-        "last_px": 39.54,
+        "last_px": 39.26,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -835,7 +295,7 @@
         "px": 81.49,
         "sl": 78.43,
         "tp": 86.99,
-        "last_px": 81.49,
+        "last_px": 80.91,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -845,7 +305,7 @@
         "px": 94.04,
         "sl": 90.97,
         "tp": 99.57,
-        "last_px": 94.04,
+        "last_px": 94.38,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -855,7 +315,7 @@
         "px": 89.66,
         "sl": 86.65,
         "tp": 95.08,
-        "last_px": 89.66,
+        "last_px": 90.12,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -865,7 +325,7 @@
         "px": 151.28,
         "sl": 143.5,
         "tp": 165.28,
-        "last_px": 151.28,
+        "last_px": 149.88,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -875,7 +335,7 @@
         "px": 73.72,
         "sl": 70.21,
         "tp": 80.03,
-        "last_px": 73.72,
+        "last_px": 75.34,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -885,7 +345,7 @@
         "px": 19.72,
         "sl": 18.6,
         "tp": 21.74,
-        "last_px": 19.72,
+        "last_px": 20.22,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -895,7 +355,7 @@
         "px": 178.28,
         "sl": 171.46,
         "tp": 190.56,
-        "last_px": 178.28,
+        "last_px": 180.18,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -905,7 +365,7 @@
         "px": 238.99,
         "sl": 230.72,
         "tp": 253.87,
-        "last_px": 238.99,
+        "last_px": 241.42,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -915,7 +375,7 @@
         "px": 256.26,
         "sl": 246.55,
         "tp": 273.74,
-        "last_px": 256.26,
+        "last_px": 254.53,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -925,7 +385,7 @@
         "px": 105.72,
         "sl": 98.89,
         "tp": 118.01,
-        "last_px": 105.72,
+        "last_px": 102.43,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -935,7 +395,7 @@
         "px": 1468.45,
         "sl": 1364.94,
         "tp": 1654.75,
-        "last_px": 1468.45,
+        "last_px": 1451.23,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -945,7 +405,7 @@
         "px": 2020.54,
         "sl": 1959.41,
         "tp": 2130.58,
-        "last_px": 2020.54,
+        "last_px": 2026.29,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -955,7 +415,7 @@
         "px": 3073.23,
         "sl": 2943.31,
         "tp": 3307.09,
-        "last_px": 3073.23,
+        "last_px": 3103.86,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -965,7 +425,7 @@
         "px": 2941.93,
         "sl": 2835.53,
         "tp": 3133.46,
-        "last_px": 2941.93,
+        "last_px": 2940.97,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -975,7 +435,7 @@
         "px": 4981.42,
         "sl": 4774.13,
         "tp": 5354.56,
-        "last_px": 4981.42,
+        "last_px": 4932.45,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -985,7 +445,7 @@
         "px": 2843.87,
         "sl": 2723.36,
         "tp": 3060.78,
-        "last_px": 2843.87,
+        "last_px": 2826.95,
         "status": "OPEN",
         "type": "SWING"
     },
@@ -995,7 +455,547 @@
         "px": 4716.95,
         "sl": 4468.93,
         "tp": 5163.38,
-        "last_px": 4716.95,
+        "last_px": 4781.91,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "MSFT",
+        "px": 489.21,
+        "sl": 472.73,
+        "tp": 518.86,
+        "last_px": 489.21,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "BRK-B",
+        "px": 489.61,
+        "sl": 475.59,
+        "tp": 514.84,
+        "last_px": 489.61,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "V",
+        "px": 353.42,
+        "sl": 331.14,
+        "tp": 393.51,
+        "last_px": 353.42,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CRM",
+        "px": 271.0,
+        "sl": 255.8,
+        "tp": 298.36,
+        "last_px": 271.0,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "DIS",
+        "px": 122.66,
+        "sl": 118.32,
+        "tp": 130.47,
+        "last_px": 122.66,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "WMT",
+        "px": 97.61,
+        "sl": 93.69,
+        "tp": 104.66,
+        "last_px": 97.61,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "TXN",
+        "px": 205.75,
+        "sl": 197.8,
+        "tp": 220.06,
+        "last_px": 205.75,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "PM",
+        "px": 172.75,
+        "sl": 165.56,
+        "tp": 185.68,
+        "last_px": 172.75,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "SPGI",
+        "px": 526.14,
+        "sl": 506.75,
+        "tp": 561.03,
+        "last_px": 526.14,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "IBM",
+        "px": 286.03,
+        "sl": 273.6,
+        "tp": 308.4,
+        "last_px": 286.03,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "DE",
+        "px": 503.37,
+        "sl": 478.01,
+        "tp": 549.03,
+        "last_px": 503.37,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "TJX",
+        "px": 124.05,
+        "sl": 119.66,
+        "tp": 131.97,
+        "last_px": 124.05,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "ADP",
+        "px": 304.03,
+        "sl": 290.78,
+        "tp": 327.89,
+        "last_px": 304.03,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CB",
+        "px": 288.74,
+        "sl": 278.64,
+        "tp": 306.92,
+        "last_px": 288.74,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "T",
+        "px": 27.96,
+        "sl": 26.96,
+        "tp": 29.77,
+        "last_px": 27.96,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "PANW",
+        "px": 197.58,
+        "sl": 185.81,
+        "tp": 218.77,
+        "last_px": 197.58,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "PGR",
+        "px": 248.19,
+        "sl": 236.44,
+        "tp": 269.34,
+        "last_px": 248.19,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "WM",
+        "px": 226.17,
+        "sl": 217.91,
+        "tp": 241.02,
+        "last_px": 226.17,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CVS",
+        "px": 67.71,
+        "sl": 64.38,
+        "tp": 73.72,
+        "last_px": 67.71,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "MO",
+        "px": 55.26,
+        "sl": 53.25,
+        "tp": 58.88,
+        "last_px": 55.26,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "ORLY",
+        "px": 90.5,
+        "sl": 86.14,
+        "tp": 98.34,
+        "last_px": 90.5,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "ECL",
+        "px": 270.47,
+        "sl": 260.23,
+        "tp": 288.9,
+        "last_px": 270.47,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "AIG",
+        "px": 84.43,
+        "sl": 81.04,
+        "tp": 90.51,
+        "last_px": 84.43,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "HCA",
+        "px": 387.68,
+        "sl": 363.96,
+        "tp": 430.38,
+        "last_px": 387.68,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "FIS",
+        "px": 80.68,
+        "sl": 77.45,
+        "tp": 86.49,
+        "last_px": 80.68,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "TEL",
+        "px": 169.15,
+        "sl": 162.42,
+        "tp": 181.26,
+        "last_px": 169.15,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "JCI",
+        "px": 104.35,
+        "sl": 100.24,
+        "tp": 111.75,
+        "last_px": 104.35,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "IDXX",
+        "px": 542.65,
+        "sl": 519.14,
+        "tp": 584.97,
+        "last_px": 542.65,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "DLR",
+        "px": 167.55,
+        "sl": 158.18,
+        "tp": 184.44,
+        "last_px": 167.55,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "ED",
+        "px": 98.36,
+        "sl": 94.41,
+        "tp": 105.45,
+        "last_px": 98.36,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "AIZ",
+        "px": 195.37,
+        "sl": 186.99,
+        "tp": 210.46,
+        "last_px": 195.37,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "TRV",
+        "px": 263.92,
+        "sl": 252.29,
+        "tp": 284.85,
+        "last_px": 263.92,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CBRE",
+        "px": 141.62,
+        "sl": 134.12,
+        "tp": 155.11,
+        "last_px": 141.62,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "VICI",
+        "px": 31.5,
+        "sl": 30.26,
+        "tp": 33.72,
+        "last_px": 31.5,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "ES",
+        "px": 62.46,
+        "sl": 59.32,
+        "tp": 68.1,
+        "last_px": 62.46,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "FE",
+        "px": 39.2,
+        "sl": 37.89,
+        "tp": 41.57,
+        "last_px": 39.2,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CNP",
+        "px": 35.91,
+        "sl": 34.61,
+        "tp": 38.26,
+        "last_px": 35.91,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "NWSA",
+        "px": 29.51,
+        "sl": 28.3,
+        "tp": 31.67,
+        "last_px": 29.51,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "TTWO",
+        "px": 240.1,
+        "sl": 226.54,
+        "tp": 264.5,
+        "last_px": 240.1,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "RJF",
+        "px": 153.1,
+        "sl": 146.47,
+        "tp": 165.04,
+        "last_px": 153.1,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "HIG",
+        "px": 125.02,
+        "sl": 120.59,
+        "tp": 132.99,
+        "last_px": 125.02,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CINF",
+        "px": 146.91,
+        "sl": 141.31,
+        "tp": 156.98,
+        "last_px": 146.91,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "NDAQ",
+        "px": 88.15,
+        "sl": 85.05,
+        "tp": 93.72,
+        "last_px": 88.15,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "CME",
+        "px": 266.48,
+        "sl": 255.08,
+        "tp": 287.01,
+        "last_px": 266.48,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "FAST",
+        "px": 42.2,
+        "sl": 40.2,
+        "tp": 45.82,
+        "last_px": 42.2,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "RSG",
+        "px": 242.01,
+        "sl": 232.88,
+        "tp": 258.46,
+        "last_px": 242.01,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "1332.T",
+        "px": 854.36,
+        "sl": 824.45,
+        "tp": 908.18,
+        "last_px": 854.36,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "1925.T",
+        "px": 4738.41,
+        "sl": 4586.65,
+        "tp": 5011.57,
+        "last_px": 4738.41,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "2802.T",
+        "px": 3863.54,
+        "sl": 3708.11,
+        "tp": 4143.33,
+        "last_px": 3863.54,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "3382.T",
+        "px": 2230.31,
+        "sl": 2140.64,
+        "tp": 2391.73,
+        "last_px": 2230.31,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "3861.T",
+        "px": 698.37,
+        "sl": 673.32,
+        "tp": 743.47,
+        "last_px": 698.37,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "6752.T",
+        "px": 1514.51,
+        "sl": 1449.55,
+        "tp": 1631.45,
+        "last_px": 1514.51,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "9532.T",
+        "px": 3628.65,
+        "sl": 3491.69,
+        "tp": 3875.17,
+        "last_px": 3628.65,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-07-01",
+        "tk": "9766.T",
+        "px": 22457.77,
+        "sl": 21126.6,
+        "tp": 24853.88,
+        "last_px": 22457.77,
         "status": "OPEN",
         "type": "SWING"
     }
