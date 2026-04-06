@@ -1,0 +1,812 @@
+[
+    {
+        "date": "2025-06-27",
+        "tk": "BRK-B",
+        "px": 485.68,
+        "sl": 472.11,
+        "tp": 510.1,
+        "last_px": 485.68,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "V",
+        "px": 346.6,
+        "sl": 324.54,
+        "tp": 386.29,
+        "last_px": 346.6,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "PM",
+        "px": 176.15,
+        "sl": 169.43,
+        "tp": 188.25,
+        "last_px": 176.15,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "IBM",
+        "px": 284.55,
+        "sl": 271.83,
+        "tp": 307.47,
+        "last_px": 284.55,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "DE",
+        "px": 506.7,
+        "sl": 482.61,
+        "tp": 550.05,
+        "last_px": 506.7,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "AMT",
+        "px": 213.8,
+        "sl": 204.32,
+        "tp": 230.85,
+        "last_px": 213.8,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "T",
+        "px": 27.19,
+        "sl": 26.23,
+        "tp": 28.91,
+        "last_px": 27.19,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "PANW",
+        "px": 200.57,
+        "sl": 189.93,
+        "tp": 219.72,
+        "last_px": 200.57,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "SHW",
+        "px": 343.41,
+        "sl": 326.74,
+        "tp": 373.42,
+        "last_px": 343.41,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "CVS",
+        "px": 66.65,
+        "sl": 63.3,
+        "tp": 72.68,
+        "last_px": 66.65,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "ORLY",
+        "px": 89.16,
+        "sl": 84.47,
+        "tp": 97.61,
+        "last_px": 89.16,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "ITW",
+        "px": 241.94,
+        "sl": 234.25,
+        "tp": 255.77,
+        "last_px": 241.94,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "AIG",
+        "px": 83.17,
+        "sl": 79.86,
+        "tp": 89.11,
+        "last_px": 83.17,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "MSI",
+        "px": 415.23,
+        "sl": 400.92,
+        "tp": 440.98,
+        "last_px": 415.23,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "HCA",
+        "px": 377.5,
+        "sl": 353.94,
+        "tp": 419.9,
+        "last_px": 377.5,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "O",
+        "px": 54.49,
+        "sl": 52.67,
+        "tp": 57.75,
+        "last_px": 54.49,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "FIS",
+        "px": 79.16,
+        "sl": 76.0,
+        "tp": 84.84,
+        "last_px": 79.16,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "SYY",
+        "px": 72.91,
+        "sl": 70.39,
+        "tp": 77.45,
+        "last_px": 72.91,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "IDXX",
+        "px": 531.32,
+        "sl": 509.54,
+        "tp": 570.52,
+        "last_px": 531.32,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "DLR",
+        "px": 167.66,
+        "sl": 158.8,
+        "tp": 183.61,
+        "last_px": 167.66,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "ED",
+        "px": 95.79,
+        "sl": 92.05,
+        "tp": 102.53,
+        "last_px": 95.79,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "BEN",
+        "px": 22.84,
+        "sl": 21.7,
+        "tp": 23.98,
+        "last_px": 22.84,
+        "status": "OPEN",
+        "type": "SHORT"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "AIZ",
+        "px": 194.56,
+        "sl": 186.03,
+        "tp": 209.92,
+        "last_px": 194.56,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "TRV",
+        "px": 260.27,
+        "sl": 249.0,
+        "tp": 280.56,
+        "last_px": 260.27,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "VTR",
+        "px": 61.2,
+        "sl": 58.65,
+        "tp": 65.78,
+        "last_px": 61.2,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "MAA",
+        "px": 143.09,
+        "sl": 137.84,
+        "tp": 152.53,
+        "last_px": 143.09,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "SBAC",
+        "px": 226.85,
+        "sl": 216.74,
+        "tp": 245.04,
+        "last_px": 226.85,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "CCI",
+        "px": 97.15,
+        "sl": 92.77,
+        "tp": 105.04,
+        "last_px": 97.15,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "PNW",
+        "px": 85.93,
+        "sl": 83.04,
+        "tp": 91.13,
+        "last_px": 85.93,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "ATO",
+        "px": 150.0,
+        "sl": 145.49,
+        "tp": 158.12,
+        "last_px": 150.0,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "LNT",
+        "px": 58.95,
+        "sl": 57.2,
+        "tp": 62.11,
+        "last_px": 58.95,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "WEC",
+        "px": 100.63,
+        "sl": 97.52,
+        "tp": 106.22,
+        "last_px": 100.63,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "CMS",
+        "px": 67.49,
+        "sl": 65.42,
+        "tp": 71.22,
+        "last_px": 67.49,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "AEP",
+        "px": 100.04,
+        "sl": 96.82,
+        "tp": 105.82,
+        "last_px": 100.04,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "PEG",
+        "px": 81.55,
+        "sl": 78.64,
+        "tp": 86.79,
+        "last_px": 81.55,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "DTE",
+        "px": 128.39,
+        "sl": 124.44,
+        "tp": 135.5,
+        "last_px": 128.39,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "PPL",
+        "px": 32.79,
+        "sl": 31.63,
+        "tp": 34.87,
+        "last_px": 32.79,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "DUK",
+        "px": 113.95,
+        "sl": 110.13,
+        "tp": 120.82,
+        "last_px": 113.95,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "VST",
+        "px": 194.29,
+        "sl": 178.12,
+        "tp": 223.4,
+        "last_px": 194.29,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "FOXA",
+        "px": 56.25,
+        "sl": 53.38,
+        "tp": 61.43,
+        "last_px": 56.25,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "FOX",
+        "px": 51.81,
+        "sl": 49.25,
+        "tp": 56.41,
+        "last_px": 51.81,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "EA",
+        "px": 157.27,
+        "sl": 151.12,
+        "tp": 168.35,
+        "last_px": 157.27,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "GM",
+        "px": 49.34,
+        "sl": 46.87,
+        "tp": 53.77,
+        "last_px": 49.34,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "ICE",
+        "px": 180.12,
+        "sl": 174.55,
+        "tp": 190.15,
+        "last_px": 180.12,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "WAT",
+        "px": 352.41,
+        "sl": 331.35,
+        "tp": 390.31,
+        "last_px": 352.41,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "NOC",
+        "px": 488.52,
+        "sl": 460.72,
+        "tp": 538.55,
+        "last_px": 488.52,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "AME",
+        "px": 179.67,
+        "sl": 173.03,
+        "tp": 191.62,
+        "last_px": 179.67,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "ROK",
+        "px": 326.35,
+        "sl": 313.65,
+        "tp": 349.21,
+        "last_px": 326.35,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "SAP",
+        "px": 301.09,
+        "sl": 291.27,
+        "tp": 318.77,
+        "last_px": 301.09,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "1721.T",
+        "px": 3216.43,
+        "sl": 3115.0,
+        "tp": 3399.0,
+        "last_px": 3216.43,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "1801.T",
+        "px": 8060.09,
+        "sl": 7691.98,
+        "tp": 8722.69,
+        "last_px": 8060.09,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "1802.T",
+        "px": 2112.32,
+        "sl": 2028.58,
+        "tp": 2263.04,
+        "last_px": 2112.32,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "1803.T",
+        "px": 1536.97,
+        "sl": 1471.16,
+        "tp": 1655.42,
+        "last_px": 1536.97,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "1812.T",
+        "px": 3603.83,
+        "sl": 3430.24,
+        "tp": 3916.31,
+        "last_px": 3603.83,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "2282.T",
+        "px": 4842.85,
+        "sl": 4706.89,
+        "tp": 5087.57,
+        "last_px": 4842.85,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "2413.T",
+        "px": 1992.5,
+        "sl": 1867.86,
+        "tp": 2216.86,
+        "last_px": 1992.5,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "2432.T",
+        "px": 2604.72,
+        "sl": 2439.74,
+        "tp": 2901.7,
+        "last_px": 2604.72,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "2531.T",
+        "px": 1168.2,
+        "sl": 1113.29,
+        "tp": 1267.04,
+        "last_px": 1168.2,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "2871.T",
+        "px": 1824.15,
+        "sl": 1757.47,
+        "tp": 1944.17,
+        "last_px": 1824.15,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "3402.T",
+        "px": 960.27,
+        "sl": 926.06,
+        "tp": 1021.84,
+        "last_px": 960.27,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "3863.T",
+        "px": 1014.92,
+        "sl": 968.69,
+        "tp": 1098.14,
+        "last_px": 1014.92,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "4502.T",
+        "px": 4194.55,
+        "sl": 4082.18,
+        "tp": 4396.81,
+        "last_px": 4194.55,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "4519.T",
+        "px": 7383.64,
+        "sl": 7026.67,
+        "tp": 8026.2,
+        "last_px": 7383.64,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "5101.T",
+        "px": 3842.41,
+        "sl": 3650.29,
+        "tp": 4034.53,
+        "last_px": 3842.41,
+        "status": "OPEN",
+        "type": "SHORT"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "5901.T",
+        "px": 2711.23,
+        "sl": 2622.61,
+        "tp": 2870.74,
+        "last_px": 2711.23,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "6702.T",
+        "px": 3410.6,
+        "sl": 3265.64,
+        "tp": 3671.53,
+        "last_px": 3410.6,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "7013.T",
+        "px": 2260.84,
+        "sl": 2083.62,
+        "tp": 2579.84,
+        "last_px": 2260.84,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "7832.T",
+        "px": 4974.77,
+        "sl": 4660.22,
+        "tp": 5540.96,
+        "last_px": 4974.77,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "8306.T",
+        "px": 1926.92,
+        "sl": 1858.5,
+        "tp": 2050.07,
+        "last_px": 1926.92,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "8308.T",
+        "px": 1324.9,
+        "sl": 1264.87,
+        "tp": 1432.94,
+        "last_px": 1324.9,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "8309.T",
+        "px": 3716.96,
+        "sl": 3600.71,
+        "tp": 3926.21,
+        "last_px": 3716.96,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "8411.T",
+        "px": 3872.82,
+        "sl": 3706.62,
+        "tp": 4171.97,
+        "last_px": 3872.82,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "8795.T",
+        "px": 3046.67,
+        "sl": 2918.64,
+        "tp": 3277.13,
+        "last_px": 3046.67,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9007.T",
+        "px": 1642.41,
+        "sl": 1570.82,
+        "tp": 1771.26,
+        "last_px": 1642.41,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9021.T",
+        "px": 3165.04,
+        "sl": 3080.46,
+        "tp": 3317.3,
+        "last_px": 3165.04,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9064.T",
+        "px": 1890.72,
+        "sl": 1817.83,
+        "tp": 2021.91,
+        "last_px": 1890.72,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9301.T",
+        "px": 1143.75,
+        "sl": 1100.7,
+        "tp": 1221.25,
+        "last_px": 1143.75,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9433.T",
+        "px": 2365.28,
+        "sl": 2292.5,
+        "tp": 2496.27,
+        "last_px": 2365.28,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9434.T",
+        "px": 210.48,
+        "sl": 204.21,
+        "tp": 221.76,
+        "last_px": 210.48,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9602.T",
+        "px": 1563.69,
+        "sl": 1481.96,
+        "tp": 1710.79,
+        "last_px": 1563.69,
+        "status": "OPEN",
+        "type": "SWING"
+    },
+    {
+        "date": "2025-06-27",
+        "tk": "9735.T",
+        "px": 5063.88,
+        "sl": 4899.98,
+        "tp": 5358.91,
+        "last_px": 5063.88,
+        "status": "OPEN",
+        "type": "SWING"
+    }
+]
