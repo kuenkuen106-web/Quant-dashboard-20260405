@@ -310,6 +310,10 @@ for trade in trade_history:
         if tk in current_prices and not pd.isna(current_prices[tk]):
             now_px = round(current_prices[tk], 2)
             trade['last_px'] = now_px
+
+            # 使用 .get() 提取，防止 KeyError
+            tp = trade.get('tp')
+            sl = trade.get('sl')
             
             # 結算邏輯：升穿目標價 (Take Profit) 或 跌穿止損價 (Stop Loss)
             if now_px >= trade['tp']:
@@ -392,33 +396,40 @@ for ticker in [t for t in ALL_TICKERS if t not in ['SPY','^VIX','^N225']]:
         is_vcp = (base_dd.iloc[-1] <= 0.35) and (rec_volat.iloc[-1] <= 0.06) and (v.iloc[-1] < v.rolling(50).mean().iloc[-1])
         is_bb_sqz = (bb_width.iloc[-1] <= bb_width.rolling(120).min().iloc[-1] * 1.1)
 
+        trade_info = None # 準備一個變數裝要 save 嘅資料
+
         if is_vcp or is_bb_sqz:
             tag_name = "🏆 VCP 突破" if is_vcp else "💥 BB 擠壓"
             sl_p = round(cp - 2.5 * catr, 2); tp_p = round(cp + 4.5 * catr, 2)
             swing_results.append({'tk': ticker, 'pqr': round(rs, 0), 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'tag': tag_name, 'type': 'SWING', 'sources': sources})
             send_discord_alert(ticker, tag_name, round(cp, 2), sl_p, tp_p, True, sources)
-            triggered = True
+            # 【修正】完整記錄所需資料
+            trade_info = {'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_p, 'tp': tp_p, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SWING'}
 
         # ---------------------------------------------------------------------
-        # 策略 B: Short Term (Gap / Oversold)
+        # 策略 B: Short Term (Gap / Oversold) - 只有當 Swing 冇中嗰陣先行
         # ---------------------------------------------------------------------
-        gap_pct = (op.iloc[-1] - c.iloc[-2]) / c.iloc[-2]
-        is_gap_up = (gap_pct >= 0.03) and (v.iloc[-1] > v.rolling(20).mean().iloc[-1] * 2)
-        is_oversold = (rsi.iloc[-1] < 28) and (cp < bb_lower.iloc[-1])
+        if not trade_info: 
+            gap_pct = (op.iloc[-1] - c.iloc[-2]) / c.iloc[-2]
+            is_gap_up = (gap_pct >= 0.03) and (v.iloc[-1] > v.rolling(20).mean().iloc[-1] * 2)
+            is_oversold = (rsi.iloc[-1] < 28) and (cp < bb_lower.iloc[-1])
 
-        if is_gap_up or is_oversold:
-            strategy_tag = "⚡ 缺口動能" if is_gap_up else "📉 極度超賣"
-            sl_price = round(cp * 0.95, 2); tp_price = round(cp * 1.05, 2)
-            short_term_results.append({'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'tag': strategy_tag, 'type': 'SHORT', 'sources': sources})
-            send_discord_alert(ticker, strategy_tag, round(cp, 2), sl_price, tp_price, True, sources)
-            triggered = True
+            if is_gap_up or is_oversold:
+                strategy_tag = "⚡ 缺口動能" if is_gap_up else "📉 極度超賣"
+                sl_price = round(cp * 0.95, 2); tp_price = round(cp * 1.05, 2)
+                short_term_results.append({'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'tag': strategy_tag, 'type': 'SHORT', 'sources': sources})
+                send_discord_alert(ticker, strategy_tag, round(cp, 2), sl_price, tp_price, True, sources)
+                # 【修正】完整記錄所需資料
+                trade_info = {'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'sl': sl_price, 'tp': tp_price, 'last_px': round(cp, 2), 'status': 'OPEN', 'type': 'SHORT'}
 
+        # ---------------------------------------------------------------------
         # 寫入歷史庫 (如果有任何一個策略觸發)
-        if triggered:
+        # ---------------------------------------------------------------------
+        if trade_info:
             funnel["ok"] += 1
-            if not any(t['tk'] == ticker and t['status'] == 'OPEN' for t in trade_history):
-                 # 這裡可以根據具體策略紀錄，範例先記 Swing 的 price
-                 trade_history.append({'date': today_str, 'tk': ticker, 'px': round(cp, 2), 'status': 'OPEN'})
+            # 檢查係咪已經有未平倉嘅單
+            if not any(t.get('tk') == ticker and t.get('status') == 'OPEN' for t in trade_history):
+                 trade_history.append(trade_info)
         else:
             funnel["vcp_fail"] += 1
 
