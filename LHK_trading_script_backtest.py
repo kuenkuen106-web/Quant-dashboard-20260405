@@ -1,4 +1,4 @@
-# backtest=============================================================================
+# UAT=============================================================================
 # ⚙️ V1 PRO QUANT DUAL-STRATEGY (UAT 時光機模式)
 # 核心功能：模擬過去交易日 / 雙引擎演算 / 來源追蹤 / 自動結算
 # =============================================================================
@@ -30,10 +30,13 @@ HISTORY_FILE = os.path.join(OUTPUT_DIR, "uat_trade_history.json")
 # 功能函數區
 # =============================================================================
 def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources):
-    """【實時警報】加入 UAT 標記與來源顯示"""
+    """【實時警報】加入 UAT 標記、來源顯示及自動幣種"""
     if not DISCORD_WEBHOOK_URL: 
-        print(f"⚠️ 未設定 Webhook URL，跳過發送 {ticker}") # 加呢行等你知道係咪讀唔到 URL
+        print(f"⚠️ 未設定 Webhook URL，跳過發送 {ticker}") 
         return
+    
+    # 👇 自動判定幣種符號
+    unit = "¥" if ticker.endswith(".T") else "$"
     
     source_str = " | ".join(sources) if sources else "動態掃描"
     color = 65280 if is_bullish else 16711680 
@@ -43,9 +46,9 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
         "description": f"**{strategy_name}** 條件已達成！\n🔍 來源: `{source_str}`",
         "color": color,
         "fields": [
-            {"name": "💵 模擬當時價格", "value": f"${price}", "inline": True},
-            {"name": "🛑 建議止損", "value": f"${sl}", "inline": True},
-            {"name": "🎯 建議止盈", "value": f"${tp}", "inline": True}
+            {"name": "💵 模擬當時價格", "value": f"{unit}{price}", "inline": True},
+            {"name": "🛑 建議止損", "value": f"{unit}{sl}", "inline": True},
+            {"name": "🎯 建議止盈", "value": f"{unit}{tp}", "inline": True}
         ],
         "footer": {"text": f"時光機模式執行中 | 模擬日期: {today_str}"}
     }
@@ -53,10 +56,7 @@ def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources
         res = requests.post(DISCORD_WEBHOOK_URL, json={"embeds": [embed_data]})
         if res.status_code == 429:
             print(f"⚠️ Discord 拒絕接收 (429 Rate Limit) - 傳送太快！")
-        
-        # 👇 核心：強制定程式停 0.5 秒，防止被 Discord Ban
-        time.sleep(0.5) 
-        
+        time.sleep(0.5) # 防止 Discord 洗版封鎖
     except Exception as e: 
         print(f"⚠️ Discord 連線錯誤: {e}")
 
