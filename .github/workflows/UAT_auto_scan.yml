@@ -35,7 +35,7 @@ jobs:
 
       - name: 🚀 執行量化掃描與發送 Discord
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BACKTEST_WEBHOOK_URL }}
+          DISCORD_BACKTEST_WEBHOOK_URL: ${{ secrets.DISCORD_BACKTEST_WEBHOOK_URL }}
           DISCORD_BACKTEST_SUMMARY_WEBHOOK: ${{ secrets.DISCORD_BACKTEST_SUMMARY_WEBHOOK }}
           # 將 GitHub UI 嘅輸入傳入 Python 自然環境
           UAT_DAYS_AGO: ${{ github.event.inputs.days_ago }}
