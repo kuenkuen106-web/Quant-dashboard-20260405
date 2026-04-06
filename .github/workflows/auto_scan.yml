@@ -29,6 +29,7 @@ jobs:
       - name: 🚀 執行量化掃描與發送 Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_SUMMARY_WEBHOOK: ${{ secrets.DISCORD_SUMMARY_WEBHOOK }}
         # 【重要檢查】請確保下面呢個檔案名，同你 Repo 裡面嘅 Python 檔案名一模一樣！
         # 如果你個檔案叫 main.py，請將下面改做 run: python main.py
         run: python LHK_trading_script.py
