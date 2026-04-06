@@ -31,25 +31,35 @@ HISTORY_FILE = os.path.join(OUTPUT_DIR, "trade_history.json")
 # 功能函數區 (Helper Functions)
 # =============================================================================
 def send_discord_alert(ticker, strategy_name, price, sl, tp, is_bullish, sources):
-    """【實時警報】確保接收並顯示來源標籤"""
-    if not DISCORD_WEBHOOK_URL or "你的專屬碼" in DISCORD_WEBHOOK_URL: return
+    """【實時警報】加入 UAT 標記與來源顯示"""
+    if not DISCORD_WEBHOOK_URL: 
+        print(f"⚠️ 未設定 Webhook URL，跳過發送 {ticker}") # 加呢行等你知道係咪讀唔到 URL
+        return
     
     source_str = " | ".join(sources) if sources else "動態掃描"
     color = 65280 if is_bullish else 16711680 
     
     embed_data = {
-        "title": f"🚨 系統異動觸發: {ticker}",
+        "title": f"🚨 [UAT 模擬] 系統異動觸發: {ticker}",
         "description": f"**{strategy_name}** 條件已達成！\n🔍 來源: `{source_str}`",
         "color": color,
         "fields": [
-            {"name": "💵 當前現價", "value": f"${price}", "inline": True},
-            {"name": "🛑 嚴格止損", "value": f"${sl}", "inline": True},
-            {"name": "🎯 目標止盈", "value": f"${tp}", "inline": True}
+            {"name": "💵 模擬當時價格", "value": f"${price}", "inline": True},
+            {"name": "🛑 建議止損", "value": f"${sl}", "inline": True},
+            {"name": "🎯 建議止盈", "value": f"${tp}", "inline": True}
         ],
-        "footer": {"text": "V1 Quant Master 實時監控系統"}
+        "footer": {"text": f"時光機模式執行中 | 模擬日期: {today_str}"}
     }
-    try: requests.post(DISCORD_WEBHOOK_URL, json={"embeds": [embed_data]})
-    except Exception as e: print(f"⚠️ Discord 連線錯誤: {e}")
+    try: 
+        res = requests.post(DISCORD_WEBHOOK_URL, json={"embeds": [embed_data]})
+        if res.status_code == 429:
+            print(f"⚠️ Discord 拒絕接收 (429 Rate Limit) - 傳送太快！")
+        
+        # 👇 核心：強制定程式停 0.5 秒，防止被 Discord Ban
+        time.sleep(0.5) 
+        
+    except Exception as e: 
+        print(f"⚠️ Discord 連線錯誤: {e}")
 
 def load_history():
     """【記憶讀取】開機時讀取過去嘅交易紀錄，用嚟做今日嘅勝負結算"""
