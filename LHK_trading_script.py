@@ -480,9 +480,9 @@ with open(HISTORY_FILE, "w", encoding="utf-8") as f:
     json.dump(trade_history[-100:], f, indent=4)
 
 # =============================================================================
-# MODULE 7 — 整合式 Dashboard 生成 (HTML + JavaScript)
+# MODULE 7 — 整合式 Dashboard 生成 (TradingView + P&L 結算升級版)
 # =============================================================================
-print("⏳ [7/7] 正在生成雙策略整合儀表板...")
+print("⏳ [7/7] 正在生成雙策略整合儀表板 (含 P&L 結算)...")
 
 html = f"""<!DOCTYPE html>
 <html lang="zh-TW">
@@ -492,21 +492,22 @@ html = f"""<!DOCTYPE html>
 </head>
 <body class="bg-[#020617] text-slate-300 p-8 font-sans">
     <header class="mb-10 text-center">
-        <h1 class="text-5xl font-black text-white italic tracking-tighter">QUANT HUB <span class="text-indigo-500">V1</span></h1>
-        <p class="text-slate-500 mt-2 font-bold uppercase tracking-widest text-xs">波段趨勢 (Swing) x 短線游擊 (Tactical) 雙系統</p>
+        <h1 class="text-5xl font-black text-white italic tracking-tighter">UAT <span class="text-indigo-500">V1</span></h1>
+        <p class="text-slate-500 mt-2 font-bold uppercase tracking-widest text-xs">波段趨勢 x 短線游擊 | 每單固定 $10,000 USD 本金</p>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto mb-16">
         <div class="space-y-6">
             <h2 class="text-2xl font-black text-indigo-400 border-b-2 border-indigo-500/30 pb-2 flex items-center gap-2">
                 🏆 波段長抱 (1-4 週)
-                <span class="text-[10px] bg-indigo-500/20 px-2 py-1 rounded text-indigo-300 font-normal">Minervini SEPA 邏輯</span>
             </h2>
             <div class="grid grid-cols-1 gap-4">
                 {"".join([f'''
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-indigo-500/50 transition shadow-lg">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-2xl font-black text-white">{d['tk']}</span>
+                        <a href="https://www.tradingview.com/chart/?symbol={'TSE:'+d['tk'].replace('.T','') if '.T' in d['tk'] else d['tk']}" target="_blank" class="text-2xl font-black text-white hover:text-indigo-400 hover:underline transition flex items-center gap-2">
+                            {d['tk']} <span class="text-sm">📈</span>
+                        </a>
                         <div class="flex flex-wrap justify-end gap-1">
                             {" ".join([f'<span class="text-[8px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">{s}</span>' for s in d['sources']])}
                         </div>
@@ -518,20 +519,21 @@ html = f"""<!DOCTYPE html>
                     </div>
                     <div class="text-center font-black text-xl text-white bg-black/40 py-2 rounded-xl border border-slate-800">${d['px']}</div>
                 </div>
-                ''' for d in swing_results]) if swing_results else '<p class="text-slate-600 italic">目前無波段訊號</p>'}
+                ''' for d in swing_results]) if swing_results else '<p class="text-slate-600 italic text-center py-4 bg-slate-900 rounded-xl border border-slate-800">目前無波段訊號</p>'}
             </div>
         </div>
 
         <div class="space-y-6">
             <h2 class="text-2xl font-black text-amber-400 border-b-2 border-amber-500/30 pb-2 flex items-center gap-2">
                 ⚡ 短線游擊 (1-3 日)
-                <span class="text-[10px] bg-amber-500/20 px-2 py-1 rounded text-amber-300 font-normal">高勝率事件驅動</span>
             </h2>
             <div class="grid grid-cols-1 gap-4">
                 {"".join([f'''
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-amber-500/50 transition shadow-lg">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-2xl font-black text-white">{d['tk']}</span>
+                        <a href="https://www.tradingview.com/chart/?symbol={'TSE:'+d['tk'].replace('.T','') if '.T' in d['tk'] else d['tk']}" target="_blank" class="text-2xl font-black text-white hover:text-amber-400 hover:underline transition flex items-center gap-2">
+                            {d['tk']} <span class="text-sm">📈</span>
+                        </a>
                         <span class="text-[10px] font-bold px-2 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded">{d['tag']}</span>
                     </div>
                     <div class="flex justify-between text-xs mb-4 text-slate-400">
@@ -541,15 +543,34 @@ html = f"""<!DOCTYPE html>
                     </div>
                     <div class="text-center font-black text-xl text-white bg-black/40 py-2 rounded-xl border border-slate-800">${d['px']}</div>
                 </div>
-                ''' for d in short_term_results]) if short_term_results else '<p class="text-slate-600 italic">目前無短線訊號</p>'}
+                ''' for d in short_term_results]) if short_term_results else '<p class="text-slate-600 italic text-center py-4 bg-slate-900 rounded-xl border border-slate-800">目前無短線訊號</p>'}
             </div>
         </div>
     </div>
 
-    <section class="max-w-7xl mx-auto mt-16">
+    <section class="max-w-7xl mx-auto mt-12 mb-12">
+        <h2 class="text-2xl font-black text-blue-400 border-b-2 border-blue-500/30 pb-2 mb-6">
+            💼 已結算交易總利潤 (基於每單 $10k USD)
+        </h2>
+        <div class="overflow-x-auto bg-slate-900 rounded-2xl border border-slate-800 shadow-xl">
+            <table class="w-full text-center text-sm">
+                <thead class="bg-black/60 text-slate-400 uppercase font-black text-[11px] tracking-widest">
+                    <tr>
+                        <th class="p-4">統計範圍</th>
+                        <th class="p-4">結案單數</th>
+                        <th class="p-4">歷史勝率</th>
+                        <th class="p-4">總盈虧 (Net P&L)</th>
+                    </tr>
+                </thead>
+                <tbody id="summary-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto mt-6">
         <h2 class="text-2xl font-black text-emerald-400 border-b-2 border-emerald-500/30 pb-2 mb-6 flex justify-between items-end">
-            <span>📜 歷史追蹤與勝率統計</span>
-            <span class="text-sm text-slate-400 font-normal">總結案: {total_closed} 筆 | 勝率: <span class="text-emerald-400 font-bold">{win_rate}%</span></span>
+            <span>📜 歷史追蹤紀錄</span>
         </h2>
         <div class="overflow-x-auto bg-slate-900 rounded-2xl border border-slate-800 shadow-xl">
             <table class="w-full text-left text-sm">
@@ -558,8 +579,9 @@ html = f"""<!DOCTYPE html>
                         <th class="p-4">建議日期</th>
                         <th class="p-4">代號</th>
                         <th class="p-4">買入價</th>
-                        <th class="p-4">結案價 (現價)</th>
-                        <th class="p-4">狀態</th>
+                        <th class="p-4">最新價/結案價</th>
+                        <th class="p-4 text-right">預估 P&L</th>
+                        <th class="p-4 text-center">狀態</th>
                     </tr>
                 </thead>
                 <tbody id="history-table-body">
@@ -569,41 +591,98 @@ html = f"""<!DOCTYPE html>
     </section>
 
     <footer class="mt-20 pb-10 text-center text-slate-600 text-[10px] uppercase tracking-widest">
-        Quant System V1 | 自動結算與推送 | 僅供學術研究使用
+        Quant System V1 | TradingView 整合版 | 僅供學術研究使用
     </footer>
 
     <script>
-    // 自動讀取 trade_history.json 並渲染表格
-    fetch('trade_history.json')
-      .then(response => response.json())
+    fetch('{HISTORY_FILE}')
+      .then(res => res.json())
       .then(data => {{
         const tbody = document.getElementById('history-table-body');
+        const summaryTbody = document.getElementById('summary-table-body');
+        
         if(data.length === 0) {{
-            tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-500">尚無歷史交易紀錄</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-500">尚無歷史交易紀錄</td></tr>';
+            summaryTbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500">尚無結算數據</td></tr>';
             return;
         }}
-        // 將資料反轉，顯示最新 15 筆紀錄
-        data.reverse().slice(0, 15).forEach(t => {{ 
-          const isWin = t.status.includes('✅');
-          const isLoss = t.status.includes('❌');
-          const statusColor = isWin ? 'text-emerald-400 bg-emerald-500/10' : (isLoss ? 'text-red-400 bg-red-500/10' : 'text-slate-300 bg-slate-700/50');
-          
-          const row = `
+
+        // 1. 生成歷史詳細表格 (反轉排序，顯示最新 30 筆)
+        const recentData = [...data].reverse();
+        recentData.slice(0, 30).forEach(t => {{ 
+            const isWin = t.status.includes('✅');
+            const isLoss = t.status.includes('❌');
+            const statusColor = isWin ? 'text-emerald-400 bg-emerald-500/10' : (isLoss ? 'text-red-400 bg-red-500/10' : 'text-amber-300 bg-amber-500/10');
+            
+            // TradingView 網址生成 (處理日股 TSE: 字首)
+            const isJp = t.tk.endsWith('.T');
+            const tvSymbol = isJp ? 'TSE:' + t.tk.replace('.T', '') : t.tk;
+            const tvUrl = `https://www.tradingview.com/chart/?symbol=${{tvSymbol}}`;
+
+            // P&L 計算 (每單 $10,000)
+            const shares = 10000 / t.px;
+            const pnl = shares * (t.last_px - t.px);
+            const pnlClass = pnl >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold';
+            const pnlStr = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toFixed(2);
+            
+            const row = `
             <tr class="border-t border-slate-800 hover:bg-slate-800/50 transition">
-              <td class="p-4 text-slate-400 text-xs">${{t.date}}</td>
-              <td class="p-4 font-black text-white flex items-center gap-2">
-                ${{t.tk}} <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">${{t.type}}</span>
-              </td>
-              <td class="p-4 text-slate-300">$${{t.px}}</td>
-              <td class="p-4 font-bold ${{isWin ? 'text-emerald-400' : (isLoss ? 'text-red-400' : 'text-white')}}">$${{t.last_px}}</td>
-              <td class="p-4">
-                <span class="px-2 py-1 rounded text-xs font-bold ${{statusColor}}">${{t.status}}</span>
-              </td>
+                <td class="p-4 text-slate-400 text-xs">${{t.date}}</td>
+                <td class="p-4 font-black text-white flex items-center gap-2">
+                    <a href="${{tvUrl}}" target="_blank" class="hover:text-indigo-400 hover:underline flex items-center gap-1">
+                        ${{t.tk}} <span class="text-[10px]">📈</span>
+                    </a>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">${{t.type || 'N/A'}}</span>
+                </td>
+                <td class="p-4 text-slate-300">$${{t.px}}</td>
+                <td class="p-4 font-bold ${{isWin ? 'text-emerald-400' : (isLoss ? 'text-red-400' : 'text-white')}}">$${{t.last_px}}</td>
+                <td class="p-4 text-right ${{pnlClass}}">${{pnlStr}}</td>
+                <td class="p-4 text-center">
+                    <span class="px-2 py-1 rounded text-[10px] font-bold ${{statusColor}}">${{t.status}}</span>
+                </td>
             </tr>`;
-          tbody.innerHTML += row;
+            tbody.innerHTML += row;
         }});
+
+        // 2. 生成 P&L 結算總結表格
+        // 只提取已結案的交易 (包含 ✅ 或 ❌)
+        const closedTrades = recentData.filter(t => t.status.includes('✅') || t.status.includes('❌'));
+        
+        const intervals = [10, 20, 50, 100, 200];
+        let summaryHtml = '';
+        
+        intervals.forEach(n => {{
+            const slice = closedTrades.slice(0, n);
+            if(slice.length === 0) return; // 如果該區間無數據則跳過
+
+            let wins = 0;
+            let totalPnl = 0;
+            slice.forEach(t => {{
+                if(t.status.includes('✅')) wins++;
+                const shares = 10000 / t.px;
+                totalPnl += shares * (t.last_px - t.px);
+            }});
+            
+            const winRate = ((wins / slice.length) * 100).toFixed(1);
+            const pnlColor = totalPnl >= 0 ? 'text-emerald-400' : 'text-red-400';
+            const sign = totalPnl >= 0 ? '+$' : '-$';
+            
+            summaryHtml += `
+            <tr class="border-t border-slate-800 hover:bg-slate-800/50 transition">
+                <td class="p-4 font-bold text-slate-300">最近 ${{n}} 筆</td>
+                <td class="p-4 text-slate-400">${{slice.length}}</td>
+                <td class="p-4 text-indigo-400 font-bold">${{winRate}}%</td>
+                <td class="p-4 font-black text-lg ${{pnlColor}}">${{sign}}${{Math.abs(totalPnl).toFixed(2)}}</td>
+            </tr>`;
+        }});
+
+        if (summaryHtml === '') {{
+            summaryTbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500">尚無足夠的已結算交易進行統計</td></tr>';
+        }} else {{
+            summaryTbody.innerHTML = summaryHtml;
+        }}
       }})
-      .catch(e => console.log('尚未建立歷史檔案:', e));
+      .catch(e => console.log('讀取 JSON 發生錯誤:', e));
     </script>
 </body>
 </html>"""
