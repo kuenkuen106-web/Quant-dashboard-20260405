@@ -7,7 +7,9 @@
         "tp": 1481.26,
         "last_px": 1361.5,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Consumer Defensive"
     },
     {
         "date": "2026-04-06",
@@ -17,7 +19,9 @@
         "tp": 5653.54,
         "last_px": 5124.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -27,7 +31,9 @@
         "tp": 4167.64,
         "last_px": 3728.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -37,7 +43,9 @@
         "tp": 3249.21,
         "last_px": 2841.5,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -47,7 +55,9 @@
         "tp": 7152.04,
         "last_px": 6373.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -57,7 +67,9 @@
         "tp": 1714.78,
         "last_px": 1538.5,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -67,7 +79,9 @@
         "tp": 3155.85,
         "last_px": 2697.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Basic Materials"
     },
     {
         "date": "2026-04-06",
@@ -77,7 +91,9 @@
         "tp": 2490.77,
         "last_px": 2239.5,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -87,7 +103,9 @@
         "tp": 367.25,
         "last_px": 328.9,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Industrials"
     },
     {
         "date": "2026-04-06",
@@ -97,7 +115,9 @@
         "tp": 10699.78,
         "last_px": 9050.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83d\udca5 BB \u64e0\u58d3",
+        "sector": "Technology"
     },
     {
         "date": "2026-04-06",
@@ -107,7 +127,9 @@
         "tp": 43494.26,
         "last_px": 38370.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83d\udca5 BB \u64e0\u58d3",
+        "sector": "Technology"
     },
     {
         "date": "2026-04-06",
@@ -117,7 +139,9 @@
         "tp": 5582.56,
         "last_px": 5127.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Financial Services"
     },
     {
         "date": "2026-04-06",
@@ -127,7 +151,9 @@
         "tp": 4977.48,
         "last_px": 4448.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Real Estate"
     },
     {
         "date": "2026-04-06",
@@ -137,7 +163,9 @@
         "tp": 5056.33,
         "last_px": 4553.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Real Estate"
     },
     {
         "date": "2026-04-06",
@@ -147,7 +175,9 @@
         "tp": 7197.84,
         "last_px": 6439.0,
         "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83c\udfc6 VCP \u7a81\u7834",
+        "sector": "Utilities"
     },
     {
         "date": "2026-04-06",
@@ -157,96 +187,8 @@
         "tp": 4475.34,
         "last_px": 3648.0,
         "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "4021.T",
-        "px": 6269.0,
-        "sl": 5907.15,
-        "tp": 6920.33,
-        "last_px": 6195.0,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "4578.T",
-        "px": 11125.0,
-        "sl": 10454.46,
-        "tp": 12331.96,
-        "last_px": 11180.0,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "5333.T",
-        "px": 4126.0,
-        "sl": 3864.34,
-        "tp": 4597.0,
-        "last_px": 4120.0,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "8233.T",
-        "px": 1978.5,
-        "sl": 1874.21,
-        "tp": 2166.21,
-        "last_px": 1979.5,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "9107.T",
-        "px": 2739.5,
-        "sl": 2499.11,
-        "tp": 3172.2,
-        "last_px": 2733.5,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "9412.T",
-        "px": 3045.0,
-        "sl": 2763.58,
-        "tp": 3551.56,
-        "last_px": 3060.0,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "9503.T",
-        "px": 2585.0,
-        "sl": 2401.86,
-        "tp": 2914.65,
-        "last_px": 2601.5,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "2802.T",
-        "px": 4657.0,
-        "sl": 4382.39,
-        "tp": 5151.3,
-        "last_px": 4657.0,
-        "status": "OPEN",
-        "type": "SWING"
-    },
-    {
-        "date": "2026-04-07",
-        "tk": "9501.T",
-        "px": 636.3,
-        "sl": 564.57,
-        "tp": 765.42,
-        "last_px": 636.3,
-        "status": "OPEN",
-        "type": "SWING"
+        "type": "SWING",
+        "tag": "\ud83d\udca5 BB \u64e0\u58d3",
+        "sector": "Communication Services"
     }
 ]
